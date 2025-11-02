@@ -1,0 +1,473 @@
+/* Updated Celebration Animation - Lower Position */
+.celebration-overlay {
+  position: fixed;
+  top: 50%; /* Start from middle */
+  left: 0;
+  width: 100%;
+  height: 50%; /* Only cover bottom half */
+  background: rgba(255, 255, 255, 0.85);
+  display: none;
+  justify-content: center;
+  align-items: flex-start; /* Align to top of this container */
+  z-index: 9999;
+  pointer-events: none;
+  padding-top: 20vh; /* Push content down from top */
+}
+
+/* Reposition poppers to be lower */
+#popper1 { top: 10%; left: 5%; }
+#popper2 { top: 10%; right: 5%; }
+#popper3 { top: 30%; left: 15%; }
+#popper4 { top: 30%; right: 15%; }
+#popper5 { top: 50%; left: 5%; }
+#popper6 { top: 50%; right: 5%; }
+#popper7 { top: 20%; left: 50%; transform: translateX(-50%); }
+#popper8 { top: 40%; left: 50%; transform: translateX(-50%); }
+
+/* Custom color for your elements */
+.custom-primary {
+    background-color: #FFB524 !important;
+    color: white !important;
+}
+
+/* Apply to Monday, Tuesday, Wednesday cards */
+.card-header.bg-primary.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #FFB524 !important;
+}
+
+/* Apply to the selected dish alert */
+.alert.alert-success {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #e6a320 !important;
+}
+
+/* Apply to the custom recipe header */
+.card-header.bg-success.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #FFB524 !important;
+}
+
+/* Make all week day headers white */
+.card-header.bg-primary.text-white h5,
+.card-header.bg-primary.text-white .mb-0 {
+    color: white !important;
+}
+
+/* Remove debug info */
+.alert.alert-info {
+    display: none !important;
+}
+
+/* Custom button styles */
+.custom-btn {
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.custom-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Keep the search button as it is - no changes */
+/* Your existing search button styles remain unchanged */
+
+/* Optional: Add some animation to the celebration message */
+@keyframes celebrationPop {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.celebration-message {
+  animation: celebrationPop 0.6s ease-out;
+}
+/* Mobile-specific styles for AI features */
+@media (max-width: 768px) {
+  /* Ensure the three buttons stay in place */
+  .service-item {
+    margin-bottom: 20px;
+  }
+  
+  /* Fix scrolling when features are open */
+  body.feature-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+  
+  /* Container for selected dish to prevent layout shift */
+  #selectedDish {
+    position: relative;
+    z-index: 1000;
+  }
+  
+  /* Make sure celebration doesn't cover buttons */
+  .celebration-overlay {
+    top: 30%;
+    height: 40%;
+    padding-top: 10vh;
+  }
+}
+/* Custom green close button */
+.custom-close-btn {
+    background-color: #81C408 !important;
+    border-color: #81C408 !important;
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.custom-close-btn:hover {
+    background-color: #6da806 !important;
+    border-color: #6da806 !important;
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(129, 196, 8, 0.3);
+}
+
+/* Card hover effects for weekly schedule */
+.weekly-schedule-card {
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.weekly-schedule-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Meal item hover effects */
+.meal-item {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.meal-item:hover {
+    background-color: #f8f9fa !important;
+    border-color: #81C408;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 196, 8, 0.1);
+}
+
+/* Alert background white */
+.alert.alert-success {
+    background-color: white !important;
+    color: #333 !important;
+    border-color: #81C408 !important;
+    border-left: 4px solid #81C408;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+    .weekly-schedule-card:hover {
+        transform: scale(1.01);
+    }
+    
+    .custom-close-btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+}
+/* Filter modal styling to match your theme */
+#filterModal .modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+#filterModal .modal-header {
+    background: linear-gradient(135deg, #FFB524, #ff6b6b);
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+#filterModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Filter indicator */
+#filterIndicator .alert {
+    border-radius: 10px;
+    border: 2px solid #81C408;
+    background: white;
+}
+
+/* Badge for filter button */
+#filterBadge {
+    font-size: 0.7em;
+    padding: 4px 8px;
+}
+/* Shop Filter System Styles */
+.fruite-categorie li.active {
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.fruite-categorie li.active a {
+    color: #198754 !important;
+    font-weight: bold;
+}
+
+.selected-ingredient {
+    background: linear-gradient(45deg, #198754, #20c997);
+    border: none;
+    font-size: 0.9rem;
+}
+
+.fruite-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fruite-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Loading animation */
+.dish-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+/* Region selection styles */
+.region-flag {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+/* Filter badge */
+.filter-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Pagination Styles */
+.pagination a.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.pagination span.disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.pagination a.active {
+    background-color: #198754;
+    color: white;
+    border-color: #198754;
+}
+
+.results-counter {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+/* Enhanced Shop Filter Styles */
+.results-counter {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.fruite-categorie li.active {
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.fruite-categorie li.active a {
+    color: #198754 !important;
+    font-weight: bold;
+}
+
+.selected-ingredient {
+    background: linear-gradient(45deg, #198754, #20c997);
+    border: none;
+    font-size: 0.9rem;
+}
+
+.fruite-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fruite-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Pagination Styles */
+.pagination a.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.pagination span.disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.pagination a.active {
+    background-color: #198754;
+    color: white;
+    border-color: #198754;
+}
+
+/* Star Rating */
+.star-rating {
+    color: #ffc107;
+}
+
+/* Shopping Bag Animation */
+@keyframes bounce {
+    0%, 20%, 60%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    80% { transform: translateY(-5px); }
+}
+
+.bounce-animation {
+    animation: bounce 0.6s;
+}
+
+/* Region Selection */
+.region-flag {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+/* Filter Badge */
+.filter-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .fruite-item {
+        margin-bottom: 20px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .pagination a {
+        margin: 2px;
+        padding: 8px 12px;
+    }
+    
+    .results-counter .alert {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading Animation */
+.dish-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+/* Social Sharing Buttons */
+.share-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.share-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.share-btn.facebook { background: #3b5998; }
+.share-btn.twitter { background: #1da1f2; }
+.share-btn.whatsapp { background: #25d366; }
+.share-btn.copy { background: #6c757d; }
+
+.share-btn:hover {
+    opacity: 0.9;
+}
+/* Advanced Filter Buttons Styling */
+.custom-filter-btn {
+    transition: all 0.3s ease !important;
+    border-radius: 25px !important;
+    padding: 8px 20px !important;
+    border: 2px solid #dee2e6 !important;
+    background: white !important;
+    color: #495057 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.custom-filter-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    border-color: #FFB524 !important;
+    background: #FFF9F0 !important;
+}
+
+.custom-filter-btn.active {
+    background: #FFB524 !important;
+    border-color: #FFB524 !important;
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 181, 36, 0.3) !important;
+}
+
+/* Filter modal enhancements */
+#filterModal .modal-content {
+    border-radius: 15px !important;
+    border: none !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1) !important;
+}
+
+#filterModal .modal-header {
+    border-radius: 15px 15px 0 0 !important;
+    background: linear-gradient(135deg, #FFB524, #ff6b6b) !important;
+}
+
+#filterModal .modal-footer {
+    border-radius: 0 0 15px 15px !important;
+}
