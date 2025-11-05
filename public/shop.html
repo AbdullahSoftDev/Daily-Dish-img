@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <script src="js/optimize.js"></script>
+        <meta charset="utf-8">
+        <title>Daily Dish - Shop All Recipes</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar start -->
+        <div class="container-fluid fixed-top">
+            <div class="container topbar bg-primary d-none d-lg-block">
+                <div class="d-flex justify-content-between">
+                    <div class="top-info ps-2">
+                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">Main GT Road Gujranwala,Pakistan </small>
+                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">dailydish.net@gmail.com</a></small>
+                    </div>
+                    <div class="top-link pe-2">
+                        <a href="#" class="text-white"><small class="text-white mx-2">Pure Taste</small>/</a>
+                        <a href="#" class="text-white"><small class="text-white mx-2">Fine Craft</small>/</a>
+                        <a href="#" class="text-white"><small class="text-white ms-2">True Flavours</small></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container px-0">
+                <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Daily Dish</h1></a>
+                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars text-primary"></span>
+                    </button>
+                    <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                        <div class="navbar-nav mx-auto">
+                            <a href="index.html" class="nav-item nav-link">Home</a>
+                            <a href="shop.html" class="nav-item nav-link active">All Dishes</a>
+                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        </div>
+                        <div class="d-flex m-3 me-0">
+                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                            <a href="#" class="position-relative me-4 my-auto">
+                                <i class="fa fa-shopping-bag fa-2x"></i>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">0</span>
+                            </a>
+                            <a href="#" class="my-auto" onclick="userManager.showLoginModal(); return false;">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- Modal Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Search Recipes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center">
+                        <div class="input-group w-75 mx-auto d-flex">
+                            <input type="search" class="form-control p-3" placeholder="Search by dish name, ingredients..." aria-describedby="search-icon-1">
+                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Search End -->
+
+        <!-- Single Page Header start -->
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Recipe Shop</h1>
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active text-white">Shop</li>
+            </ol>
+        </div>
+        <!-- Single Page Header End -->
+
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <h1 class="mb-4">Discover Amazing Recipes</h1>
+                
+                <!-- Search and Filter Row - Fixed Height -->
+                <div class="search-filter-row">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-xl-6">
+                            <div class="input-group w-100 mx-auto d-flex">
+                                <input type="search" class="form-control p-3" placeholder="Search recipes by name or ingredients..." aria-describedby="search-icon-1" id="shopSearch">
+                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <!-- Advanced Filters Button - Reduced Height -->
+                            <div class="d-flex justify-content-start h-100">
+                                <button class="btn btn-primary px-4 py-2 rounded-pill w-100" onclick="filterSystem.showFilterModal()" style="height: 54px;">
+                                    <i class="fas fa-filter me-2"></i> Advanced Filters
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="bg-light ps-3 py-2 rounded d-flex justify-content-between align-items-center mb-4 h-100" style="height: 54px;">
+                                <label for="categoryFilter" class="my-auto me-2 d-none d-md-block">Filter by:</label>
+                                <select id="categoryFilter" name="categoryFilter" class="form-select border-0 bg-light">
+                                    <option value="all">All Categories</option>
+                                    <option value="Breakfast (Nashta)">Breakfast (Nashta)</option>
+                                    <option value="Chicken Dishes">Chicken Dishes</option>
+                                    <option value="Beef &amp; Mutton Dishes">Beef &amp; Mutton Dishes</option>
+                                    <option value="Vegetable Dishes">Vegetable Dishes</option>
+                                    <option value="Rice Dishes">Rice Dishes</option>
+                                    <option value="BBQ &amp; Grilling">BBQ &amp; Grilling</option>
+                                    <option value="Seafood Dishes">Seafood Dishes</option>
+                                    <option value="Lunch Ideas">Lunch Ideas</option>
+                                    <option value="Fast Food &amp; Street Food">Fast Food &amp; Street Food</option>
+                                    <option value="Lentils &amp; Beans">Lentils &amp; Beans</option>
+                                    <option value="Breads (Roti, Naan, Paratha)">Breads (Roti, Naan, Paratha)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Counter -->
+                <div id="resultsCounter"></div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <h4>Dietary Categories</h4>
+                                    <ul class="list-unstyled fruite-categorie">
+                                        <li class="active">
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#" onclick="shopFilterSystem.setCategoryFilter('all'); return false;"><i class="fas fa-utensils me-2"></i>All Dishes</a>
+                                                <span>(0)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#" onclick="shopFilterSystem.setCategoryFilter('non-veg'); return false;"><i class="fas fa-drumstick-bite me-2"></i>Non-Veg</a>
+                                                <span>(0)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#" onclick="shopFilterSystem.setCategoryFilter('veg'); return false;"><i class="fas fa-leaf me-2"></i>Veg</a>
+                                                <span>(0)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#" onclick="shopFilterSystem.setCategoryFilter('sea-food'); return false;"><i class="fas fa-fish me-2"></i>Sea-Food</a>
+                                                <span>(0)</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="#" onclick="shopFilterSystem.setCategoryFilter('fast-food'); return false;"><i class="fas fa-hamburger me-2"></i>Fast Food</a>
+                                                <span>(0)</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- FORCE BUTTONS TO WORK -->
+<script>
+// NUCLEAR BUTTON FIX - WORKING VERSION
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚨 Applying WORKING nuclear button fix...');
+    
+    // Wait for shop system to initialize
+    setTimeout(() => {
+        forceButtonsToWork();
+        fixLoginForms();
+    }, 2000);
+});
+function fixLoginForms() {
+    console.log('🔐 Fixing login forms...');
+    
+    // Fix existing login form if it exists
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.onsubmit = function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            
+            console.log('🔐 Form submission:', email, password);
+            
+            if (window.userManager) {
+                const result = window.userManager.login(email, password);
+                if (result.success) {
+                    // Close modal and show success
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('authModal'));
+                    if (modal) modal.hide();
+                    window.userManager.showNotification(`Welcome back, ${result.user}!`, 'success');
+                } else {
+                    window.userManager.showNotification(result.message, 'error');
+                }
+            }
+        };
+    }
+}
+// Add this to your nuclear button script
+function initializeShoppingSystem() {
+    console.log('🛒 Initializing shopping system...');
+    
+    // Initialize shopping bag counter
+    if (window.userManager) {
+        window.userManager.updateShoppingBagCounter();
+    }
+    
+    // Re-initialize when user logs in/out
+    const originalShowUserMenu = window.userManager?.showUserMenu;
+    if (originalShowUserMenu) {
+        window.userManager.showUserMenu = function() {
+            originalShowUserMenu.call(this);
+            setTimeout(() => {
+                this.updateShoppingBagCounter();
+            }, 500);
+        };
+    }
+}
+function forceButtonsToWork() {
+    console.log('💥 Force enabling all buttons...');
+    
+    // Method 1: Remove ALL template event blockers
+    removeTemplateBlockers();
+    
+    // Method 2: Force bind our event handlers
+    bindOurButtonHandlers();
+    
+    // Method 3: Add data attributes for reliable identification
+    addButtonDataAttributes();
+    
+    console.log('✅ Nuclear button fix applied!');
+}
+
+function removeTemplateBlockers() {
+    // Remove any template CSS that blocks clicks
+    const style = document.createElement('style');
+    style.textContent = `
+        /* FORCE BUTTONS TO BE CLICKABLE */
+        .fruite-item * {
+            pointer-events: auto !important;
+        }
+        .btn-shopping-bag, .btn-share, .btn-outline-danger, .btn-danger {
+            pointer-events: auto !important;
+            z-index: 1000 !important;
+            position: relative !important;
+            cursor: pointer !important;
+        }
+        /* Remove any template click prevention */
+        [onclick*="template"], [onclick*="prevent"] {
+            pointer-events: none !important;
+        }
+        /* Ensure buttons are above other elements */
+        .position-absolute {
+            z-index: 1000 !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function bindOurButtonHandlers() {
+    console.log('🔗 Binding button handlers...');
+    
+    // Bind shopping bag buttons
+    document.querySelectorAll('.btn-shopping-bag').forEach(btn => {
+        // Remove ALL existing event listeners by cloning
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        // Add our click handler
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            console.log('🛒 Shopping bag button CLICKED!');
+            const dishId = findDishIdFromButton(this);
+            console.log('🛒 Dish ID found:', dishId);
+            
+            if (dishId && window.shopFilterSystem) {
+                console.log('🛒 Calling addToShoppingList with ID:', dishId);
+                window.shopFilterSystem.addToShoppingList(dishId);
+            } else {
+                console.error('❌ shopFilterSystem not found or no dish ID');
+            }
+        }, true); // Use capture phase to ensure we get the event first
+    });
+    
+    // Bind favorite buttons
+    document.querySelectorAll('.btn-outline-danger, .btn-danger').forEach(btn => {
+        if (btn.closest('.fruite-item')) {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                console.log('❤️ Favorite button CLICKED!');
+                const dishId = findDishIdFromButton(this);
+                console.log('❤️ Dish ID found:', dishId);
+                
+                if (dishId && window.shopFilterSystem) {
+                    console.log('❤️ Calling toggleFavorite with ID:', dishId);
+                    window.shopFilterSystem.toggleFavorite(dishId);
+                } else {
+                    console.error('❌ shopFilterSystem not found or no dish ID');
+                }
+            }, true);
+        }
+    });
+    
+    // Bind share buttons
+    document.querySelectorAll('.btn-share').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            console.log('📤 Share button CLICKED!');
+            const dishId = findDishIdFromButton(this);
+            console.log('📤 Dish ID found:', dishId);
+            
+            if (dishId && window.shopFilterSystem) {
+                console.log('📤 Calling shareRecipe with ID:', dishId);
+                window.shopFilterSystem.shareRecipe(dishId);
+            } else {
+                console.error('❌ shopFilterSystem not found or no dish ID');
+            }
+        }, true);
+    });
+}
+
+function addButtonDataAttributes() {
+    console.log('🏷️ Adding data attributes to buttons...');
+    
+    // Add data attributes to all dish cards for reliable ID finding
+    document.querySelectorAll('.fruite-item').forEach((card, index) => {
+        let dishId = 1000 + index;
+        
+        // Try to extract from URL in card
+        const recipeLink = card.querySelector('a[href*="shop-detail"]');
+        if (recipeLink) {
+            try {
+                const urlParams = new URLSearchParams(recipeLink.href.split('?')[1]);
+                const id = urlParams.get('id');
+                if (id) dishId = parseInt(id);
+            } catch (e) {
+                console.log('Using fallback ID:', dishId);
+            }
+        }
+        
+        // Set data attribute on the card
+        card.setAttribute('data-dish-id', dishId);
+        
+        // Add data attributes to buttons
+        const shoppingBtn = card.querySelector('.btn-shopping-bag');
+        const favoriteBtn = card.querySelector('.btn-outline-danger, .btn-danger');
+        const shareBtn = card.querySelector('.btn-share');
+        
+        if (shoppingBtn) {
+            shoppingBtn.setAttribute('data-dish-id', dishId);
+            shoppingBtn.setAttribute('onclick', `shopFilterSystem.addToShoppingList(${dishId}); return false;`);
+        }
+        if (favoriteBtn) {
+            favoriteBtn.setAttribute('data-dish-id', dishId);
+            favoriteBtn.setAttribute('onclick', `shopFilterSystem.toggleFavorite(${dishId}); return false;`);
+        }
+        if (shareBtn) {
+            shareBtn.setAttribute('data-dish-id', dishId);
+            shareBtn.setAttribute('onclick', `shopFilterSystem.shareRecipe(${dishId}); return false;`);
+        }
+    });
+}
+
+function findDishIdFromButton(button) {
+    // Method 1: Get from data attribute
+    const dataId = button.getAttribute('data-dish-id');
+    if (dataId) return parseInt(dataId);
+    
+    // Method 2: Find from parent card
+    const card = button.closest('.fruite-item');
+    if (card) {
+        const cardId = card.getAttribute('data-dish-id');
+        if (cardId) return parseInt(cardId);
+    }
+    
+    // Method 3: Extract from URL in card
+    const recipeLink = card?.querySelector('a[href*="shop-detail"]');
+    if (recipeLink) {
+        const urlParams = new URLSearchParams(recipeLink.href.split('?')[1]);
+        const id = urlParams.get('id');
+        if (id) return parseInt(id);
+    }
+    
+    // Method 4: Use index as fallback
+    const cards = document.querySelectorAll('.fruite-item');
+    const index = Array.from(cards).indexOf(card);
+    return 1000 + index;
+}
+
+// Re-bind buttons every time dishes are displayed
+const originalDisplayDishes = window.shopFilterSystem?.displayDishes;
+if (originalDisplayDishes) {
+    window.shopFilterSystem.displayDishes = function() {
+        originalDisplayDishes.call(this);
+        setTimeout(() => {
+            bindOurButtonHandlers();
+            addButtonDataAttributes();
+        }, 100);
+    };
+}
+
+// Initialize shopping bag counter
+function initializeShoppingBagCounter() {
+    if (window.userManager) {
+        setTimeout(() => {
+            window.userManager.updateShoppingBagCounter();
+        }, 1000);
+    }
+}
+
+// Initialize when page loads
+initializeShoppingBagCounter();
+console.log('🔧 Button override system ready!');
+
+function fixUserSession() {
+    console.log('🔧 Checking user session...');
+    
+    if (window.userManager) {
+        const currentUser = localStorage.getItem('currentUser');
+        console.log('📋 Current user from storage:', currentUser);
+        
+        if (currentUser && (!window.userManager.users || !window.userManager.users[currentUser])) {
+            console.warn('🚨 Corrupted user session detected, clearing...');
+            localStorage.removeItem('currentUser');
+            window.userManager.currentUser = null;
+            window.userManager.showUserMenu();
+        }
+    }
+}
+    
+document.addEventListener('DOMContentLoaded', function() {
+    initializeShoppingBagCounter();
+    setTimeout(() => {
+        fixUserSession();
+    }, 1000);
+});
+console.log('🔧 Button override system ready!');
+</script>
+                            <!-- Quick Filters -->
+<div class="col-lg-12">
+    <div class="mb-3">
+        <h4>Quick Filters</h4>
+        <div class="mb-2">
+            <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="shopFilterSystem.setCookingTimeFilter('30')">
+                <i class="fas fa-clock me-1"></i> Quick Meals (<30 min)
+            </button>
+        </div>
+        <div class="mb-2">
+            <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="shopFilterSystem.setEasyRecipesFilter()">
+                <i class="fas fa-star me-1"></i> Easy Recipes
+            </button>
+        </div>
+        <div class="mb-2">
+            <button class="btn btn-outline-warning btn-sm w-100" onclick="shopFilterSystem.resetFilters()">
+                <i class="fas fa-refresh me-1"></i> Reset All Filters
+            </button>
+        </div>
+    </div>
+</div>
+
+                            <!-- Featured Recipes -->
+                            <div class="col-lg-12">
+                                <h4 class="mb-3">Featured Recipes</h4>
+                                <div id="featuredRecipes">
+                                    <div class="text-center py-3">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="text-muted mt-2">Loading featured recipes...</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center my-4">
+                                    <a href="index.html" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">
+                                        <i class="fas fa-home me-2"></i> Back to Home
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Promotion Banner -->
+<!-- Promotion Banner - Hidden on mobile -->
+<div class="col-lg-12 d-none d-lg-block">
+    <div class="d-flex flex-column align-items-center">
+        <!-- First Row: First Image -->
+        <div class="mb-3">
+            <img src="img/Daily-Dishes (3).webp" class="img-fluid w-100 rounded" alt="Daily Dish Promotion" loading="lazy">
+        </div>
+        
+        <!-- Second Row: Text in 3 lines -->
+        <div class="text-center mb-3">
+            <h3 class="fw-bold m-0" style="font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 24px; line-height: 29px; color: rgb(69, 89, 91);">
+                Fresh<br>Recipes<br>Daily!
+            </h3>
+        </div>
+        
+        <!-- Third Row: Second Image -->
+        <div>
+            <img src="img/Daily-Dishes (4).webp" class="img-fluid w-100 rounded" alt="Daily Dish Promotion" loading="lazy">
+        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dishes Grid -->
+                    <div class="col-lg-9">
+                        <div class="row g-4 justify-content-center" id="dishesContainer">
+                            <!-- Dishes will be loaded here dynamically -->
+                            <div class="col-12 text-center py-5">
+                                <div class="spinner-border text-primary mb-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <h4 class="text-primary">Loading Recipes...</h4>
+                                <p class="text-muted">Please wait while we load delicious recipes for you</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="col-12">
+                            <div class="pagination d-flex justify-content-center mt-5">
+                                <!-- Pagination will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+        <script>
+            // Enhanced search handler for shop.html
+function checkForSearchResults() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('search');
+    
+    console.log('🔍 Shop page search check:', searchTerm);
+    
+    if (searchTerm) {
+        // Check sessionStorage for pre-searched results
+        const storedResults = sessionStorage.getItem('searchResults');
+        console.log('💾 Stored results found:', !!storedResults);
+        
+        if (storedResults) {
+            try {
+                const searchData = JSON.parse(storedResults);
+                console.log('📊 Stored search data:', searchData.term, searchData.results?.length);
+                
+                if (searchData.term === searchTerm && searchData.results) {
+                    console.log(`🔍 Using pre-searched results for: ${searchTerm}`);
+                    
+                    // Use the pre-searched results
+                    if (window.shopFilterSystem) {
+                        window.shopFilterSystem.setSearchResults(searchData.results, searchTerm);
+                    }
+                    
+                    // Clean up
+                    sessionStorage.removeItem('searchResults');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error parsing stored search results:', error);
+            }
+        }
+        
+        // If no pre-searched results, perform search normally
+        console.log('🔍 Performing new search in shop page');
+        if (window.shopFilterSystem) {
+            window.shopFilterSystem.setSearchFilter(searchTerm);
+        }
+    }
+}
+
+// Call when shop.html loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏪 Shop page loaded, checking for search...');
+    checkForSearchResults();
+});
+        </script>
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+            <div class="container py-5">
+                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <a href="#">
+                                <h1 class="text-primary mb-0">Daily Dish</h1>
+                                <p class="text-secondary mb-0">Fresh recipes daily</p>
+                            </a>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="position-relative mx-auto">
+                                <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="email" placeholder="Your Email">
+                                <button type="submit" class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Subscribe Now</button>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="d-flex justify-content-end pt-3">
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
+                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-5">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-item">
+                            <h4 class="text-light mb-3">Why Choose Daily Dish?</h4>
+                            <p class="mb-4">Discover amazing recipes from around the world. Plan your meals, save your favorites, and never wonder what to cook again!</p>
+                            <a href="index.html" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Explore Recipes</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="d-flex flex-column text-start footer-item">
+                            <h4 class="text-light mb-3">Quick Links</h4>
+                            <a class="btn-link" href="index.html">Home</a>
+                            <a class="btn-link" href="shop.html">All Recipes</a>
+                            <a class="btn-link" href="contact.html">Contact Us</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="d-flex flex-column text-start footer-item">
+                            <h4 class="text-light mb-3">My Account</h4>
+                            <a class="btn-link" href="#" onclick="userManager.showLoginModal(); return false;">Login/Register</a>
+                            <a class="btn-link" href="#" onclick="userManager.showUserProfile(); return false;">My Profile</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-item">
+                            <h4 class="text-light mb-3">Contact Info</h4>
+                            <p>Address: Main GT Road Gujranwala,Pakistan</p>
+                            <p>Email: dailydish.net@gmail.com</p>
+                            <p>Phone: +92 321 306 9279</p>
+                            <p>Available: 24/7 for your cooking needs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Daily Dish</a>, All right reserved.</span>
+                    </div>
+                    <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        Designed for food lovers everywhere
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Copyright End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-arrow-up"></i>
+        </a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/lightbox/js/lightbox.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Your Script Files -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Your Config -->
+    <script src="js/firebase-config.js"></script>    
+    <script src="js/dish-manager.js"></script>
+    <script src="js/user-manager.js"></script>
+    <script src="js/filter-system.js"></script>
+    <script src="js/shop-filter-system.js"></script>
+    <script src="js/recipe-detail-manager.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/main.js"></script>
+
+    <style>
+        /* Consistent height for search/filter row */
+        .search-filter-row .form-control,
+        .search-filter-row .btn,
+        .search-filter-row .bg-light {
+            height: 54px !important;
+        }
+
+        /* Featured recipes styling */
+        .featured-recipe-item {
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .featured-recipe-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .featured-recipe-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        /* Advanced filter button height fix */
+        .btn-primary {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    <style>
+        /* Force hide promotion on mobile */
+@media (max-width: 991.98px) {
+    .col-lg-12.d-none.d-lg-block {
+        display: none !important;
+    }
+    
+    /* Nuclear option - hide any promotion-like elements */
+    div[class*="promotion"],
+    div:has(> img[alt*="Daily Dish Promotion"]),
+    div:has(> img[src*="Daily-Dishes"]) {
+        display: none !important;
+    }
+}
+    </style>
+    </body>
+</html>

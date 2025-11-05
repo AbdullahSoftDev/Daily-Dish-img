@@ -1,0 +1,1843 @@
+/*** Spinner Start ***/
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .8s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+ }
+
+ #spinner.show {
+     transition: opacity .8s ease-out, visibility 0s linear .0s;
+     visibility: visible;
+     opacity: 1;
+ }
+
+ .back-to-top {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    display: flex;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s;
+    z-index: 99;
+}
+/*** Spinner End ***/
+
+
+/*** Button Start ***/
+.btn {
+    font-weight: 600;
+    transition: .5s;
+}
+
+.btn-square {
+    width: 32px;
+    height: 32px;
+}
+
+.btn-sm-square {
+    width: 34px;
+    height: 34px;
+}
+
+.btn-md-square {
+    width: 44px;
+    height: 44px;
+}
+
+.btn-lg-square {
+    width: 56px;
+    height: 56px;
+}
+
+.btn-square,
+.btn-sm-square,
+.btn-md-square,
+.btn-lg-square {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+}
+
+.btn.border-secondary {
+    transition: 0.5s;
+}
+
+.btn.border-secondary:hover {
+    background: var(--bs-secondary) !important;
+    color: var(--bs-white) !important;
+}
+
+/*** Topbar Start ***/
+.fixed-top {
+    transition: 0.5s;
+    background: var(--bs-white);
+    border: 0;
+}
+
+.topbar {
+    padding: 20px;
+    border-radius: 230px 100px;
+}
+
+.topbar .top-info {
+    font-size: 15px;
+    line-height: 0;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.topbar .top-link {
+    font-size: 15px;
+    line-height: 0;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.topbar .top-link a {
+    letter-spacing: 1px;
+}
+
+.topbar .top-link a small:hover {
+    color: var(--bs-secondary) !important;
+    transition: 0.5s;
+}
+
+.topbar .top-link a small:hover i {
+    color: var(--bs-primary) !important;
+}
+/*** Topbar End ***/
+
+/*** Navbar Start ***/
+.navbar .navbar-nav .nav-link {
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: .5s;
+}
+
+.navbar {
+    height: 100px;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.navbar .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link.active,
+.fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
+.fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
+    color: var(--bs-primary);
+}
+
+.navbar .dropdown-toggle::after {
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+@media (min-width: 1200px) {
+    .navbar .nav-item .dropdown-menu {
+        display: block;
+        visibility: hidden;
+        top: 100%;
+        transform: rotateX(-75deg);
+        transform-origin: 0% 0%;
+        border: 0;
+        transition: .5s;
+        opacity: 0;
+    }
+}
+/* FIX LOGIN GRAY SCREEN BUG */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-content {
+    background-color: white !important;
+}
+
+body.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+.dropdown .dropdown-menu a:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-primary);
+}
+
+.navbar .nav-item:hover .dropdown-menu {
+    transform: rotateX(0deg);
+    visibility: visible;
+    background: var(--bs-light) !important;
+    border-radius: 10px !important;
+    transition: .5s;
+    opacity: 1;
+}
+
+#searchModal .modal-content {
+    background: rgba(255, 255, 255, .8);
+}
+/*** Navbar End ***/
+
+/*** Hero Header ***/
+.hero-header {
+    background: linear-gradient(rgba(248, 223, 173, 0.1), rgba(248, 223, 173, 0.1)), url(../img/hero-img.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.carousel-item {
+    position: relative;
+}
+
+.carousel-item a {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px;
+    background: linear-gradient(rgba(255, 181, 36, 0.7), rgba(255, 181, 36, 0.7));
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+    width: 48px;
+    height: 48px;
+    border-radius: 48px;
+    border: 1px solid var(--bs-white);
+    background: var(--bs-primary);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.carousel-control-next {
+    margin-right: 20px;
+}
+
+.carousel-control-prev {
+    margin-left: 20px;
+}
+
+.page-header {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/cart-page-header-img.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@media (min-width: 992px) {
+    .hero-header,
+    .page-header {
+        margin-top: 152px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-header,
+    .page-header {
+        margin-top: 97px !important;
+    }
+}
+/*** Hero Header end ***/
+
+
+/*** featurs Start ***/
+.featurs .featurs-item .featurs-icon {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.featurs .featurs-item .featurs-icon::after {
+    content: "";
+    width: 35px;
+    height: 35px;
+    background: var(--bs-secondary);
+    position: absolute;
+    bottom: -10px;
+    transform: translate(-50%);
+    transform: rotate(45deg);
+    background: var(--bs-secondary);
+    
+}
+/*** featurs End ***/
+
+
+/*** service Start ***/
+.service .service-item .service-content {
+    position: relative;
+    width: 250px; 
+    height: 130px; 
+    top: -50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+}
+
+/*** service End ***/
+
+
+/*** Fruits Start ***/
+.fruite .tab-class .nav-item a.active {
+    background: var(--bs-secondary) !important;
+}
+
+.fruite .tab-class .nav-item a.active span {
+    color: var(--bs-white) !important; 
+}
+
+.fruite .fruite-categorie .fruite-name {
+    line-height: 40px;
+}
+
+.fruite .fruite-categorie .fruite-name a {
+    transition: 0.5s;
+}
+
+.fruite .fruite-categorie .fruite-name a:hover {
+    color: var(--bs-secondary);
+}
+
+.fruite .fruite-item {
+    height: 100%;
+    transition: 0.5s;
+}
+.fruite .fruite-item:hover {
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
+}
+
+.fruite .fruite-item .fruite-img {
+    overflow: hidden;
+    transition: 0.5s;
+    border-radius: 10px 10px 0 0;
+}
+
+.fruite .fruite-item .fruite-img img {
+    transition: 0.5s;
+}
+
+.fruite .fruite-item .fruite-img img:hover {
+    transform: scale(1.3);
+}
+/*** Fruits End ***/
+
+.custom-btn {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.custom-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+/*** vesitable Start ***/
+.vesitable .vesitable-item {
+    height: 100%;
+    transition: 0.5s;
+}
+
+.vesitable .vesitable-item:hover {
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
+}
+
+.vesitable .vesitable-item .vesitable-img {
+    overflow: hidden;
+    transition: 0.5s;
+    border-radius: 10px 10px 0 0;
+}
+
+.vesitable .vesitable-item .vesitable-img img {
+    transition: 0.5s;
+}
+
+.vesitable .vesitable-item .vesitable-img img:hover {
+    transform: scale(1.2);
+}
+
+.vesitable .owl-stage {
+    margin: 50px 0;
+    position: relative;
+}
+
+.vesitable .owl-nav .owl-prev {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    color: var(--bs-primary);
+    padding: 5px 25px;
+    border: 1px solid var(--bs-secondary);
+    border-radius: 20px;
+    transition: 0.5s;
+
+}
+
+.vesitable .owl-nav .owl-prev:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+}
+
+.vesitable .owl-nav .owl-next {
+    position: absolute;
+    top: -8px;
+    right: 88px;
+    color: var(--bs-primary);
+    padding: 5px 25px;
+    border: 1px solid var(--bs-secondary);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.vesitable .owl-nav .owl-next:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+}
+/*** vesitable End ***/
+
+
+/*** Banner Section Start ***/
+.banner .banner-btn:hover {
+    background: var(--bs-primary);
+}
+/*** Banner Section End ***/
+
+
+/*** Facts Start ***/
+.counter {
+    height: 100%;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.counter i {
+    font-size: 60px;
+    margin-bottom: 25px;
+}
+
+.counter h4 {
+    color: var(--bs-primary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.counter h1 {
+    margin-bottom: 0;
+}
+/*** Facts End ***/
+
+
+/*** testimonial Start ***/
+.testimonial .owl-nav .owl-prev {
+    position: absolute;
+    top: -58px;
+    right: 0;
+    color: var(--bs-primary);
+    padding: 5px 25px;
+    border: 1px solid var(--bs-secondary);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.testimonial .owl-nav .owl-prev:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+}
+
+.testimonial .owl-nav .owl-next {
+    position: absolute;
+    top: -58px;
+    right: 88px;
+    color: var(--bs-primary);
+    padding: 5px 25px;
+    border: 1px solid var(--bs-secondary);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.testimonial .owl-nav .owl-next:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+}
+/*** testimonial End ***/
+
+
+/*** Single Page Start ***/
+.pagination {
+    display: inline-block;
+}
+  
+.pagination a {
+    color: var(--bs-dark);
+    padding: 10px 16px;
+    text-decoration: none;
+    transition: 0.5s;
+    border: 1px solid var(--bs-secondary);
+    margin: 0 4px;
+}
+  
+.pagination a.active {
+    background-color: var(--bs-primary);
+    color: var(--bs-light);
+    border: 1px solid var(--bs-secondary);
+}
+  
+.pagination a:hover:not(.active) {background-color: var(--bs-primary)}
+
+.nav.nav-tabs .nav-link.active {
+    border-bottom: 2px solid var(--bs-secondary) !important;
+}
+/*** Single Page End ***/
+
+
+/*** Footer Start ***/
+.footer .footer-item .btn-link {
+    line-height: 35px;
+    color: rgba(255, 255, 255, .5);
+    transition: 0.5s;
+}
+
+.footer .footer-item .btn-link:hover {
+    color: var(--bs-secondary) !important;
+}
+
+.footer .footer-item p.mb-4 {
+    line-height: 35px;
+}
+/*** Footer End ***/
+
+/* Feature Buttons with same effects as dish cards */
+.feature-btn {
+    text-decoration: none;
+    display: block;
+}
+
+.feature-item {
+    height: 100%;
+    transition: 0.5s;
+    border: 1px solid #dee2e6;
+}
+
+.feature-item:hover {
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
+}
+
+.feature-item .feature-img {
+    overflow: hidden;
+    transition: 0.5s;
+    border-radius: 10px 10px 0 0;
+}
+
+.feature-item .feature-img img {
+    transition: 0.5s;
+}
+
+.feature-item:hover .feature-img img {
+    transform: scale(1.3);
+}
+
+/* Service Item Hover Effects */
+.service-item {
+    height: 100%;
+    transition: 0.5s;
+}
+
+.service-item:hover {
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
+}
+
+.service-item img {
+    transition: 0.5s;
+}
+
+.service-item:hover img {
+    transform: scale(1.3);
+}
+
+/* Ensure the image container keeps the image in frame */
+.service-item {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.service-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Custom color for your elements */
+.custom-primary {
+    background-color: #FFB524 !important;
+    color: white !important;
+}
+
+/* Apply to Monday, Tuesday, Wednesday cards */
+.card-header.bg-primary.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+}
+
+/* Apply to the selected dish alert */
+.alert.alert-success {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #e6a320 !important;
+}
+
+/* Apply to the custom recipe header */
+.card-header.bg-success.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+}
+
+/* Remove debug info */
+.alert.alert-info {
+    display: none !important;
+}
+
+/* Make all week day headers white */
+.card-header.bg-primary.text-white h5,
+.card-header.bg-primary.text-white .mb-0 {
+    color: white !important;
+}
+
+/* Apply your custom color to all card headers */
+.card-header.bg-primary.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #FFB524 !important;
+}
+
+/* Change the main container background from grey to white */
+.container-fluid.py-5.bg-light {
+    background-color: white !important;
+}
+
+/* Card hover effects for weekly schedule */
+.weekly-schedule-card {
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    background: white;
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.weekly-schedule-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Meal item hover effects */
+.meal-item {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    background: #f8f9fa !important;
+    border-radius: 15px !important;
+}
+
+.meal-item:hover {
+    background-color: white !important;
+    border-color: #81C408;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(129, 196, 8, 0.25);
+}
+
+/* Card header styling */
+.card-header.bg-primary.text-white {
+    background-color: #FFB524 !important;
+    color: white !important;
+    border-color: #FFB524 !important;
+    border-radius: 20px 20px 0 0 !important;
+}
+
+/* Make the regenerate button circular too */
+.btn-success {
+    border-radius: 25px !important;
+    padding: 10px 25px !important;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+    .weekly-schedule-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .meal-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(129, 196, 8, 0.2);
+    }
+    
+    .weekly-schedule-card,
+    .card-header.bg-primary.text-white {
+        border-radius: 15px !important;
+    }
+    
+    .meal-item {
+        border-radius: 12px !important;
+    }
+}
+
+/* Ensure all backgrounds are white */
+.card-body {
+    background-color: white !important;
+    border-radius: 0 0 20px 20px !important;
+}
+
+.bg-light.rounded {
+    background-color: #f8f9fa !important;
+    border-radius: 15px !important;
+}
+
+/* PERFECT ALIGNMENT FOR RECIPE INFO SECTION - CLEAN VERSION */
+.recipe-info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.recipe-info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0 10px;
+}
+
+/* ROW 1: Icons - all at same height */
+.recipe-info-icon {
+    font-size: 1.75rem;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.recipe-info-icon.clock { color: var(--bs-primary); }
+.recipe-info-icon.difficulty { color: var(--bs-warning); }
+.recipe-info-icon.globe { color: var(--bs-info); }
+.recipe-info-icon.utensils { color: var(--bs-secondary); }
+
+/* ROW 2: Labels - all at same height */
+.recipe-info-label {
+    margin-bottom: 8px;
+    line-height: 1.2;
+    font-weight: 600;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ROW 3: Values - all at same height */
+.recipe-info-value {
+    line-height: 1.2;
+    font-size: 0.875rem;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* DIFFICULTY ICONS - FIXED ALIGNMENT */
+.difficulty-icons {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    justify-content: center;
+    height: 40px; /* MATCH THE HEIGHT OF OTHER ICONS */
+    align-items: center; /* Center the icons vertically */
+}
+
+.difficulty-icons i {
+    font-size: 1.5rem;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    line-height: 1; /* Remove any extra line height */
+}
+
+.difficulty-icons i.active {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Easy: Only spoon is green */
+.difficulty-icons i.fa-utensil-spoon.active { color: #4CAF50; }
+
+/* Medium: Only utensils are orange */
+.difficulty-icons i.fa-utensils.active { color: #FF9800; }
+
+/* Hard: Both spoon AND utensils are red - FIXED */
+.difficulty-icons.hard i.fa-utensil-spoon.active,
+.difficulty-icons.hard i.fa-utensils.active { 
+    color: #F44336; 
+}
+
+/* Ensure all icon containers have same height */
+.row.text-center.align-items-center .col-3 > i,
+.row.text-center.align-items-center .col-3 > .difficulty-icons {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+/* Specific fix for Font Awesome icons to have consistent size */
+.fa-2x {
+    font-size: 1.75rem !important; /* Match the size exactly */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .recipe-info-row {
+        flex-wrap: wrap;
+    }
+    
+    .recipe-info-item {
+        flex: 0 0 50%;
+        margin-bottom: 20px;
+    }
+    
+    .recipe-info-icon {
+        font-size: 1.5rem;
+        height: 35px;
+    }
+}
+
+/* Backward compatibility for existing structure */
+.row.text-center.align-items-center {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.row.text-center.align-items-center .col-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: auto;
+}
+
+.row.text-center.align-items-center .col-3 i {
+    margin-bottom: 15px;
+    font-size: 1.75rem;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.row.text-center.align-items-center .col-3 p {
+    margin-bottom: 8px;
+    line-height: 1.2;
+    font-weight: 600;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.row.text-center.align-items-center .col-3 small {
+    display: block;
+    line-height: 1.2;
+    font-size: 0.875rem;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Social Features Styles */
+.social-features {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.star-rating {
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.star-rating .star:hover {
+    color: #ffc107 !important;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    font-size: 0.8em;
+}
+
+.comment-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Filter Styles */
+#filterIndicator {
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+/* User Profile Styles */
+.favorites-list, .recent-list {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .social-features {
+        padding: 10px;
+    }
+}.dish-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.dish-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.dish-info {
+    padding: 15px;
+}
+
+.dish-meta {
+    margin: 10px 0;
+}
+
+.ingredient-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.ingredient-tag {
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}/* Advanced Filters - Matching your existing design */
+.btn-time-filter.active,
+.btn-diff-filter.active,
+.btn-diet-filter.active,
+.btn-cuisine-filter.active {
+    background: var(--bs-secondary) !important;
+}
+
+.btn-time-filter.active span,
+.btn-diff-filter.active span,
+.btn-diet-filter.active span,
+.btn-cuisine-filter.active span {
+    color: var(--bs-white) !important;
+}
+
+/* Filter pills hover effects */
+.btn-time-filter:hover,
+.btn-diff-filter:hover,
+.btn-diet-filter:hover,
+.btn-cuisine-filter:hover {
+    background: var(--bs-secondary) !important;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.btn-time-filter:hover span,
+.btn-diff-filter:hover span,
+.btn-diet-filter:hover span,
+.btn-cuisine-filter:hover span {
+    color: var(--bs-white) !important;
+}
+
+/* Advanced Filters Button Styling */
+.btn-primary {
+    background-color: #FFB524 !important;
+    border-color: #FFB524 !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #e6a320 !important;
+    border-color: #e6a320 !important;
+    color: white !important;
+}
+
+/* Filter pills active state */
+.btn-time-filter.active,
+.btn-diff-filter.active,
+.btn-diet-filter.active,
+.btn-cuisine-filter.active {
+    background: #FFB524 !important;
+    border-color: #FFB524 !important;
+}
+
+.btn-time-filter.active span,
+.btn-diff-filter.active span,
+.btn-diet-filter.active span,
+.btn-cuisine-filter.active span {
+    color: white !important;
+}
+/* Fixed Card Heights */
+.fruite-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.fruite-img {
+    flex-shrink: 0;
+}
+
+.fruite-item .p-4 {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive dropdown */
+@media (max-width: 768px) {
+    .bg-light.ps-3.py-3.rounded {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .bg-light.ps-3.py-3.rounded label {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+}
+
+/* Ensure consistent card heights */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+/* Consistent height for search/filter row */
+.search-filter-row .form-control,
+.search-filter-row .btn,
+.search-filter-row .bg-light {
+    height: 54px !important;
+}
+
+/* Featured recipes styling */
+.featured-recipe-item {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.featured-recipe-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.featured-recipe-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* Advanced filter button height fix */
+.btn-primary {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Fixed card layout with consistent button positioning */
+.fruite-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.fruite-img {
+    flex-shrink: 0;
+}
+
+.fruite-item .p-4 {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.fruite-item .p-4 .text-muted {
+    flex-grow: 1;
+    min-height: 60px; /* Ensure consistent description height */
+}
+
+.fruite-item .d-flex.justify-content-between {
+    margin-top: auto; /* Push buttons to bottom */
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Ensure all cards have same height */
+.fruite-item {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.fruite-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}   
+/* Advanced Filters Modern Design */
+.filter-btn {
+    border: 2px solid #e9ecef !important;
+    border-radius: 20px !important;
+    padding: 6px 16px !important;
+    font-size: 0.85rem !important;
+    background: white !important;
+    color: #495057 !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    border-color: #FFB524 !important;
+    background: #FFF9F0 !important;
+    color: #E67E22 !important;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #FFB524, #FF8C42) !important;
+    border-color: #FFB524 !important;
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 181, 36, 0.4) !important;
+}
+
+/* Modal enhancements */
+#filterModal .modal-content {
+    border-radius: 15px !important;
+    border: none !important;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+}
+
+#filterModal .modal-header {
+    border-radius: 12px 12px 0 0 !important;
+    background: linear-gradient(135deg, #FFB524, #ff6b6b) !important;
+    padding: 1rem 1.5rem !important;
+}
+
+#filterModal .modal-body {
+    padding: 1.5rem !important;
+}
+
+#filterModal .modal-footer {
+    border-radius: 0 0 12px 12px !important;
+    padding: 1rem 1.5rem !important;
+}
+
+/* Smaller modal */
+#filterModal .modal-dialog {
+    max-width: 500px !important;
+}
+/* Perfect circle back-to-top button */
+.back-to-top {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: fixed !important;
+    right: 30px !important;
+    bottom: 30px !important;
+    z-index: 99 !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+.back-to-top:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 181, 36, 0.4);
+}
+
+/* Smooth scrolling for entire site */
+html {
+    scroll-behavior: smooth;
+}
+/* Mobile-specific pagination */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    .pagination a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        margin: 2px;
+    }
+    
+    /* Ensure dishes container is visible for scrolling */
+    #dishesContainer {
+        scroll-margin-top: 80px;
+    }
+}
+
+/* Desktop pagination */
+@media (min-width: 769px) {
+    .pagination a {
+        padding: 10px 16px;
+    }
+}
+/* FIXED Button Hover Effects - Restore your original hover styles */
+.btn.border.border-secondary.rounded-pill.px-3.text-primary.btn-sm {
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6 !important;
+    background: white !important;
+    color: #495057 !important;
+}
+
+.btn.border.border-secondary.rounded-pill.px-3.text-primary.btn-sm:hover {
+    background: var(--bs-secondary) !important;
+    color: var(--bs-white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: var(--bs-secondary) !important;
+}
+
+/* Specific hover effects for shopping bag button */
+.btn.border.border-secondary.rounded-pill.px-3.text-primary.btn-sm:hover .fa-shopping-bag {
+    color: white !important;
+}
+
+/* Specific hover effects for share button */
+.btn.border.border-secondary.rounded-pill.px-3.text-primary.btn-sm:hover .fa-share-alt {
+    color: white !important;
+}
+
+/* Keep your existing card hover effects */
+.fruite-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fruite-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Recipe detail page specific button styles */
+#cookingActions .btn {
+    transition: all 0.3s ease;
+}
+
+#cookingActions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== ENHANCED CARD HOVER ANIMATIONS - HIGH PRIORITY ===== */
+.fruite-item {
+    transition: all 0.3s ease !important;
+}
+
+.fruite-item:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    border-color: #FFB524 !important;
+}
+
+/* ===== HEART BUTTON HOVER EFFECTS - HIGH PRIORITY ===== */
+.fruite-item .btn-outline-danger {
+    transition: all 0.3s ease !important;
+    border-width: 2px !important;
+}
+
+.fruite-item .btn-outline-danger:hover {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    transform: scale(1.2) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+}
+
+.fruite-item .btn-danger {
+    transition: all 0.3s ease !important;
+    border-width: 2px !important;
+}
+
+.fruite-item .btn-danger:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5) !important;
+}
+
+/* ===== SHOPPING BAG BUTTON HOVER EFFECTS - HIGH PRIORITY ===== */
+.fruite-item .btn-shopping-bag {
+    transition: all 0.3s ease !important;
+    border-width: 2px !important;
+}
+
+.fruite-item .btn-shopping-bag:hover {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: white !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3) !important;
+}
+
+/* ===== SHARE BUTTON HOVER EFFECTS - HIGH PRIORITY ===== */
+.fruite-item .btn-share {
+    transition: all 0.3s ease !important;
+    border-width: 2px !important;
+}
+
+.fruite-item .btn-share:hover {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* ===== FEATURED RECIPE ITEM HOVER - HIGH PRIORITY ===== */
+.featured-recipe-item {
+    transition: all 0.3s ease !important;
+}
+
+.featured-recipe-item:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+    background-color: #f8f9fa !important;
+}
+
+/* ===== SPECIFIC BUTTON STYLING FOR SHOP PAGE ===== */
+#dishesContainer .btn-shopping-bag:hover .fa-shopping-bag,
+#dishesContainer .btn-share:hover .fa-share-alt {
+    color: white !important;
+    transform: scale(1.1) !important;
+}
+
+/* ===== PREVENT CLICK EVENT PROPAGATION ===== */
+.fruite-item .btn-outline-danger,
+.fruite-item .btn-danger,
+.fruite-item .btn-shopping-bag,
+.fruite-item .btn-share {
+    pointer-events: auto !important;
+}
+
+.fruite-item .btn-outline-danger:hover,
+.fruite-item .btn-danger:hover,
+.fruite-item .btn-shopping-bag:hover,
+.fruite-item .btn-share:hover {
+    z-index: 10 !important;
+    position: relative !important;
+}
+/* Add this to your CSS file */
+.fruite-item .btn:disabled {
+    opacity: 1 !important;
+    background-color: #198754 !important;
+    color: white !important;
+    border-color: #198754 !important;
+}
+
+/* Remove any strange gray backgrounds */
+.fruite-item .btn-shopping-bag.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: white !important;
+}
+/* Banner visibility - Desktop only */
+@media (max-width: 768px) {
+    .banner-desktop-only {
+        display: none !important;
+    }
+}
+
+/* Mobile banner alternative */
+@media (min-width: 769px) {
+    .banner-mobile-only {
+        display: none !important;
+    }
+}
+.cooking-action-btn {
+    min-height: 90px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.cooking-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Ensure buttons stay in shape on zoom */
+@media (max-width: 576px) {
+    .cooking-action-btn {
+        min-height: 80px;
+        padding: 0.5rem !important;
+    }
+    .cooking-action-btn i {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+    .cooking-action-btn span {
+        font-size: 0.75rem !important;
+    }
+}
+/* Related Recipes Carousel Styles */
+.vegetable-carousel .owl-stage {
+    display: flex;
+    padding: 10px 0;
+}
+
+.vegetable-carousel .owl-item {
+    display: flex;
+    height: 100%;
+}
+
+.vegetable-carousel .fruite-item {
+    transition: all 0.3s ease;
+    margin: 5px;
+}
+
+.vegetable-carousel .fruite-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.vegetable-carousel .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.vegetable-carousel .owl-prev,
+.vegetable-carousel .owl-next {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+.vegetable-carousel .owl-prev:hover,
+.vegetable-carousel .owl-next:hover {
+    background: #FFB524 !important;
+    color: white !important;
+}
+
+.vegetable-carousel .owl-prev {
+    left: -20px !important;
+}
+
+.vegetable-carousel .owl-next {
+    right: -20px !important;
+}
+
+/* Ensure proper card heights */
+.vegetable-carousel .fruite-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.vegetable-carousel .fruite-img {
+    flex-shrink: 0;
+}
+
+.vegetable-carousel .p-4 {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+/* Review form styling */
+#reviewComment:required {
+    border-left: 3px solid #ffc107 !important;
+}
+
+.star-rating {
+    cursor: pointer;
+}
+
+.star-rating .fa-star:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s;
+}
+
+/* Required field indicator */
+.required-field::after {
+    content: " *";
+    color: #dc3545;
+}
+/* NUCLEAR: Remove all form validation */
+#reviewForm input:required,
+#reviewForm textarea:required {
+    box-shadow: none !important;
+    border-left: none !important;
+}
+
+#reviewForm input:invalid,
+#reviewForm textarea:invalid {
+    box-shadow: none !important;
+    border-color: #dee2e6 !important;
+}
+
+/* NUCLEAR: Remove all form validation */
+#reviewForm input:required,
+#reviewForm textarea:required {
+    box-shadow: none !important;
+    border-left: none !important;
+}
+
+#reviewForm input:invalid,
+#reviewForm textarea:invalid {
+    box-shadow: none !important;
+    border-color: #dee2e6 !important;
+}
+
+/* Remove focus styles that might indicate validation */
+#reviewForm input:focus,
+#reviewForm textarea:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+    border-color: #ffc107 !important;
+}
+/* My Review System Styles */
+.my-star-rating .fa-star {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.my-star-rating .fa-star:hover {
+    transform: scale(1.3);
+}
+
+.rating-bar-item .progress {
+    background-color: #e9ecef;
+}
+
+.review-item {
+    transition: transform 0.2s ease;
+}
+
+.review-item:hover {
+    transform: translateY(-2px);
+}
+/* ========== UPDATED REVIEW SYSTEM STYLES ========== */
+.review-form-card, .reviews-display-card {
+    background: white;
+    border-radius: 10px;
+}
+
+/* Star Rating Styles */
+.my-star-rating {
+    background: white;
+    border: 2px solid #e9ecef;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+    border-radius: 8px;
+}
+
+.star-wrapper {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.star-wrapper:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 181, 36, 0.1);
+}
+
+.star-icon {
+    font-size: 1.8rem;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.star-wrapper:hover .star-icon {
+    color: #FFB524;
+    transform: scale(1.1);
+}
+
+.star-wrapper.active .star-icon {
+    color: #FFB524;
+    text-shadow: 0 0 10px rgba(255, 181, 36, 0.5);
+}
+
+.star-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.star-wrapper:hover .star-label {
+    color: black;
+}
+
+.star-wrapper.active .star-label {
+    color: black;
+    font-weight: 700;
+}
+
+/* Form Field Hover Effects */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: black;
+}
+
+.form-control:hover {
+    border-color: #81C408;
+    transform: translateY(-1px);
+}
+
+.form-control:focus {
+    border-color: #81C408;
+    box-shadow: 0 0 0 0.2rem rgba(129, 196, 8, 0.25);
+    transform: translateY(-1px);
+    color: black;
+}
+
+.form-floating label {
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label {
+    color: #81C408;
+    transform: scale(0.85) translateY(-1.5rem) translateX(0.15rem);
+}
+
+/* Button Hover Effects */
+.btn[style*="background: #81C408"] {
+    transition: all 0.3s ease;
+}
+
+.btn[style*="background: #81C408"]:hover {
+    background: #73b007 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(129, 196, 8, 0.3);
+}
+
+.btn[style*="background: #FFB524"] {
+    transition: all 0.3s ease;
+}
+
+.btn[style*="background: #FFB524"]:hover {
+    background: #e6a320 !important;
+    transform: translateY(-1px);
+}
+
+/* Reviews List Styles */
+.review-item {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.review-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #81C408;
+}
+
+.user-avatar {
+    background: #81C408 !important;
+    color: black !important;
+    font-weight: bold;
+}
+
+/* Rating Bars */
+.rating-bars .rating-bar-item {
+    transition: all 0.3s ease;
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+}
+
+.rating-bar-item:hover {
+    background: rgba(129, 196, 8, 0.1);
+    transform: translateX(3px);
+}
+
+.progress {
+    background: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: #FFB524;
+    border-radius: 5px;
+}
+
+/* Tab Management */
+#reviewFormSection {
+    display: block; /* Show on main tab */
+}
+
+#reviewsDisplaySection {
+    display: none; /* Hide on main tab */
+}
+
+/* When on reviews tab, swap visibility */
+body.reviews-tab-active #reviewFormSection {
+    display: none;
+}
+
+body.reviews-tab-active #reviewsDisplaySection {
+    display: block;
+}
+
+/* Loading Animation */
+.loading-dots:after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .my-star-rating {
+        padding: 0.3rem;
+        gap: 0.2rem;
+    }
+    
+    .star-icon {
+        font-size: 1.5rem;
+    }
+    
+    .star-wrapper {
+        padding: 0.3rem;
+    }
+}
+/* Equal height columns for carousel ONLY - CSS Solution */
+.vegetable-carousel .owl-stage {
+    display: flex !important;
+}
+
+.vegetable-carousel .owl-item {
+    display: flex !important;
+    height: auto !important;
+}
+
+.vesitable-item {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 450px; /* Set a fixed minimum height */
+}
+
+.vesitable-img {
+    flex-shrink: 0 !important;
+    height: 200px !important; /* Fixed image height */
+}
+
+.vesitable-img img {
+    height: 100% !important;
+    object-fit: cover !important;
+    width: 100% !important;
+}
+
+.vesitable-item .p-4 {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.vesitable-item .p-4 .d-flex {
+    margin-top: auto !important;
+}
+
+/* Today's Recommendation - Keep variable heights */
+.fruite-item {
+    height: auto; /* Natural height */
+}
+
+.fruite-img {
+    height: 200px; /* Only fix image height */
+}
+
+.fruite-img img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Ensure carousel container has proper spacing */
+.vegetable-carousel {
+    position: relative;
+    padding: 0 10px;
+}
+
+/* Carousel navigation fixes */
+.owl-carousel .owl-nav button {
+    background: #81C408 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+.owl-carousel .owl-nav button.owl-prev {
+    left: -20px !important;
+}
+
+.owl-carousel .owl-nav button.owl-next {
+    right: -20px !important;
+}
+
+.owl-carousel .owl-nav button:hover {
+    background: #6da806 !important;
+}
