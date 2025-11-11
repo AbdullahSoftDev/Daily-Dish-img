@@ -106,34 +106,73 @@
 function enhanceImageLoading() {
     console.log('🚀 Enhancing image loading...');
     
-    // 1. Add data-src to all lazy images
-    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-        if (!img.hasAttribute('data-src')) {
-            img.setAttribute('data-src', img.src);
+    // Simple preload for critical images
+    const criticalImages = [
+        'img/Daily Dish Template.webp',
+        'img/DailyDish.webp', 
+        'img/Weekly Schedule.webp',
+        'img/Chicken-Biryani.webp'
+    ];
+    
+    criticalImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        console.log(`✅ Preloaded: ${src}`);
+    });
+    
+    // Enhanced lazy loading - COMPLETELY EXCLUDE surprise me images
+    document.querySelectorAll('img').forEach(img => {
+        // Check if this is a surprise me image
+        const isSurpriseMeImage = img.classList.contains('surprise-me-image') || 
+                                 img.closest('#selectedDish') || 
+                                 img.parentElement?.closest('#selectedDish');
+        
+        if (isSurpriseMeImage) {
+            // COMPLETELY remove any lazy loading behavior for surprise me images
+            img.removeAttribute('loading');
+            img.removeAttribute('data-src');
+            console.log('🎲 Surprise me image - ALL lazy loading disabled');
+        } else {
+            // Apply lazy loading to all other images
+            if (!img.hasAttribute('loading')) {
+                img.loading = 'lazy';
+            }
+            if (!img.hasAttribute('data-src')) {
+                img.setAttribute('data-src', img.src);
+            }
         }
     });
     
-    // 2. Initialize smart image manager
-    if (!window.smartImageManager) {
-        window.smartImageManager = new SmartImageManager();
-    }
-    
-    // 3. Preload based on current page
-    const currentPage = window.location.pathname;
-    if (currentPage.includes('index.html') || currentPage === '/') {
-        window.smartImageManager.preloadPageImages('homepage');
-    } else if (currentPage.includes('shop.html')) {
-        window.smartImageManager.preloadPageImages('shop');
-    } else if (currentPage.includes('shop-detail.html')) {
-        window.smartImageManager.preloadPageImages('recipe-detail');
-    }
-    
-    // 4. Load visible images immediately
+    // Load visible images immediately (excluding surprise me images)
     setTimeout(() => {
-        window.smartImageManager.loadImagesInViewport();
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+            const rect = img.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 2) {
+                const src = img.getAttribute('data-src') || img.src;
+                img.src = src;
+            }
+        });
     }, 100);
 }
-
+function preloadSurpriseMeImages(dishes) {
+    console.log('🔄 Preloading surprise me images...');
+    
+    // Preload first 10 random dish images for instant display during spin
+    const imagesToPreload = dishes.slice(0, 10);
+    
+    imagesToPreload.forEach(dish => {
+        if (dish.image) {
+            const img = new Image();
+            img.src = dish.image;
+            img.onload = () => {
+                console.log(`✅ Preloaded surprise image: ${dish.name}`);
+            };
+            img.onerror = () => {
+                console.log(`❌ Failed to preload: ${dish.name}`);
+            };
+        }
+    });
+}
 // Call this in your existing optimize.js init function
 document.addEventListener('DOMContentLoaded', enhanceImageLoading);
 // Add this SIMPLE version to optimize.js - NO CLASS NEEDED

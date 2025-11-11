@@ -426,10 +426,15 @@ async function toggleSurpriseMe() {
             
             // Get all dishes from dishManager
             let allDishes = window.dishManager.getAllDishes();
-            
-            if (allDishes.length === 0) {
-                throw new Error('No dishes available');
-            }
+
+if (allDishes.length === 0) {
+    throw new Error('No dishes available');
+}
+
+// PRELOAD images for instant loading during spin
+preloadSurpriseMeImages(allDishes);
+
+console.log(`🍽️ Using ${allDishes.length} dishes for surprise selection`);
             
             console.log(`🍽️ Using ${allDishes.length} dishes for surprise selection`);
             
@@ -477,7 +482,6 @@ async function toggleSurpriseMe() {
                                                          class="img-fluid h-100 w-100" 
                                                          style="object-fit: cover; object-position: center;" 
                                                          alt="${randomDish.name}"
-                                                         loading="eager"  <!-- NO LAZY LOADING -->
                                                          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
                                                 </div>
                                             </div>
@@ -603,7 +607,6 @@ function showFinalDish(dish) {
                                              class="img-fluid h-100 w-100" 
                                              style="object-fit: cover; object-position: center;" 
                                              alt="${dish.name}"
-                                             loading="eager"  <!-- NO LAZY LOADING -->
                                              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
                                     </div>
                                 </div>
