@@ -426,7 +426,26 @@ async function toggleSurpriseMe() {
             
             // Get all dishes from dishManager
             let allDishes = window.dishManager.getAllDishes();
-
+// Add this function to ai-features.js (place it before toggleSurpriseMe function)
+function preloadSurpriseMeImages(dishes) {
+    console.log('🔄 Preloading surprise me images...');
+    
+    // Preload first 10 random dish images for instant display during spin
+    const imagesToPreload = dishes.slice(0, 10);
+    
+    imagesToPreload.forEach(dish => {
+        if (dish.image) {
+            const img = new Image();
+            img.src = dish.image;
+            img.onload = () => {
+                console.log(`✅ Preloaded surprise image: ${dish.name}`);
+            };
+            img.onerror = () => {
+                console.log(`❌ Failed to preload: ${dish.name}`);
+            };
+        }
+    });
+}
 if (allDishes.length === 0) {
     throw new Error('No dishes available');
 }
