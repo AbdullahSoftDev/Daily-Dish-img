@@ -497,10 +497,12 @@ console.log(`🍽️ Using ${allDishes.length} dishes for surprise selection`);
                                             <div class="d-flex align-items-center justify-content-center p-4">
                                                 <div class="square-image-container rounded-circle overflow-hidden shadow" style="width: 250px; height: 250px;">
                                                     <img src="${randomDish.image}" 
-                                                         class="img-fluid h-100 w-100" 
-                                                         style="object-fit: cover; object-position: center;" 
-                                                         alt="${randomDish.name}"
-                                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
+                                                        class="img-fluid h-100 w-100" 
+                                                        style="object-fit: cover; object-position: center;" 
+                                                        alt="${randomDish.name}"
+                                                        loading="eager"
+                                                        decoding="async"
+                                                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
                                                 </div>
                                             </div>
                                         </div>
@@ -625,6 +627,8 @@ function showFinalDish(dish) {
                                              class="img-fluid h-100 w-100" 
                                              style="object-fit: cover; object-position: center;" 
                                              alt="${dish.name}"
+                                             loading="eager"
+                                             decoding="async"
                                              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
                                     </div>
                                 </div>

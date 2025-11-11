@@ -104,56 +104,57 @@
     }
 
     // ==================== ENHANCE IMAGE LOADING ====================
-    function enhanceImageLoading() {
-        console.log('🚀 Enhancing image loading...');
+    // ==================== ENHANCE IMAGE LOADING ====================
+function enhanceImageLoading() {
+    console.log('🚀 Enhancing image loading...');
+    
+    // Simple preload for critical images
+    const criticalImages = [
+        'img/Daily Dish Template.webp',
+        'img/DailyDish.webp', 
+        'img/Weekly Schedule.webp',
+        'img/Chicken-Biryani.webp'
+    ];
+    
+    criticalImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        console.log(`✅ Preloaded: ${src}`);
+    });
+    
+    // Enhanced lazy loading - COMPLETELY EXCLUDE surprise me images
+    document.querySelectorAll('img').forEach(img => {
+        // Check if this is a surprise me image
+        const isSurpriseMeImage = img.closest('#selectedDish') || 
+                                 img.parentElement?.closest('#selectedDish');
         
-        // Simple preload for critical images
-        const criticalImages = [
-            'img/Daily Dish Template.webp',
-            'img/DailyDish.webp', 
-            'img/Weekly Schedule.webp',
-            'img/Chicken-Biryani.webp'
-        ];
-        
-        criticalImages.forEach(src => {
-            const img = new Image();
-            img.src = src;
-            console.log(`✅ Preloaded: ${src}`);
-        });
-        
-        // Enhanced lazy loading - COMPLETELY EXCLUDE surprise me images
-        document.querySelectorAll('img').forEach(img => {
-            // Check if this is a surprise me image
-            const isSurpriseMeImage = img.closest('#selectedDish') || 
-                                     img.parentElement?.closest('#selectedDish');
-            
-            if (isSurpriseMeImage) {
-                // COMPLETELY remove any lazy loading behavior for surprise me images
-                img.removeAttribute('loading');
-                img.removeAttribute('data-src');
-                console.log('🎲 Surprise me image - ALL lazy loading disabled');
-            } else {
-                // Apply lazy loading to all other images
-                if (!img.hasAttribute('loading')) {
-                    img.loading = 'lazy';
-                }
-                if (!img.hasAttribute('data-src')) {
-                    img.setAttribute('data-src', img.src);
-                }
+        if (isSurpriseMeImage) {
+            // COMPLETELY remove any lazy loading behavior for surprise me images
+            img.removeAttribute('loading');
+            img.removeAttribute('data-src');
+            console.log('🎲 Surprise me image - ALL lazy loading disabled');
+        } else {
+            // Apply lazy loading to all other images
+            if (!img.hasAttribute('loading')) {
+                img.loading = 'lazy';
+            }
+            if (!img.hasAttribute('data-src')) {
+                img.setAttribute('data-src', img.src);
+            }
+        }
+    });
+    
+    // Load visible images immediately (excluding surprise me images)
+    setTimeout(() => {
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+            const rect = img.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 2) {
+                const src = img.getAttribute('data-src') || img.src;
+                img.src = src;
             }
         });
-        
-        // Load visible images immediately (excluding surprise me images)
-        setTimeout(() => {
-            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-                const rect = img.getBoundingClientRect();
-                if (rect.top < window.innerHeight * 2) {
-                    const src = img.getAttribute('data-src') || img.src;
-                    img.src = src;
-                }
-            });
-        }, 100);
-    }
+    }, 100);
+}
 
     // ==================== SCRIPT OPTIMIZATION ====================
     function optimizeScriptLoading() {
