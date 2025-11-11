@@ -102,7 +102,89 @@
             };
         }
     }
+// Add this to your optimize.js - REPLACE existing lazy loading
+function enhanceImageLoading() {
+    console.log('🚀 Enhancing image loading...');
+    
+    // 1. Add data-src to all lazy images
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        if (!img.hasAttribute('data-src')) {
+            img.setAttribute('data-src', img.src);
+        }
+    });
+    
+    // 2. Initialize smart image manager
+    if (!window.smartImageManager) {
+        window.smartImageManager = new SmartImageManager();
+    }
+    
+    // 3. Preload based on current page
+    const currentPage = window.location.pathname;
+    if (currentPage.includes('index.html') || currentPage === '/') {
+        window.smartImageManager.preloadPageImages('homepage');
+    } else if (currentPage.includes('shop.html')) {
+        window.smartImageManager.preloadPageImages('shop');
+    } else if (currentPage.includes('shop-detail.html')) {
+        window.smartImageManager.preloadPageImages('recipe-detail');
+    }
+    
+    // 4. Load visible images immediately
+    setTimeout(() => {
+        window.smartImageManager.loadImagesInViewport();
+    }, 100);
+}
 
+// Call this in your existing optimize.js init function
+document.addEventListener('DOMContentLoaded', enhanceImageLoading);
+// Add this SIMPLE version to optimize.js - NO CLASS NEEDED
+function enhanceImageLoading() {
+    console.log('🚀 Enhancing image loading...');
+    
+    // Simple preload for critical images
+    const criticalImages = [
+        'img/Daily Dish Template.webp',
+        'img/DailyDish.webp', 
+        'img/Weekly Schedule.webp',
+        'img/Chicken-Biryani.webp'
+    ];
+    
+    criticalImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        console.log(`✅ Preloaded: ${src}`);
+    });
+    
+    // Enhanced lazy loading - EXCLUDE surprise me images
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        // Check if this is a surprise me image
+        const isSurpriseMeImage = img.closest('#selectedDish') || 
+                                 img.parentElement?.closest('#selectedDish') ||
+                                 img.src.includes('surprise') ||
+                                 img.alt.includes('Surprise');
+        
+        if (isSurpriseMeImage) {
+            // Remove lazy loading for surprise me images
+            img.loading = 'eager';
+            console.log('🎲 Surprise me image - eager loading enabled');
+        } else if (!img.hasAttribute('data-src')) {
+            img.setAttribute('data-src', img.src);
+        }
+    });
+    
+    // Load visible images immediately
+    setTimeout(() => {
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+            const rect = img.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 2) {
+                const src = img.getAttribute('data-src') || img.src;
+                img.src = src;
+            }
+        });
+    }, 100);
+}
+
+// Call this in your existing optimize.js
+document.addEventListener('DOMContentLoaded', enhanceImageLoading);
     // ==================== SCRIPT OPTIMIZATION ====================
     function optimizeScriptLoading() {
         // Scripts to defer (non-critical)

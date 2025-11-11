@@ -701,8 +701,7 @@ handleCategoryClick(category) {
                      class="rounded me-3" 
                      style="width: 60px; height: 60px; object-fit: cover;"
                      alt="${dish.name}"
-                     loading="lazy"  <!-- ADD THIS -->
-                     onerror="this.src='img/single-item.webp'">
+                     loading="lazy" onerror="this.src='img/single-item.webp'">
                 <div class="flex-grow-1">
                     <h6 class="mb-1">
                         <a href="shop-detail.html?recipe=${encodeURIComponent(dish.name)}&id=${dish.id}" 

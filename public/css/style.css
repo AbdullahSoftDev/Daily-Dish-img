@@ -63,7 +63,22 @@
     justify-content: center;
     font-weight: normal;
 }
+.navbar-logo {
+    height: 50px;
+    width: auto;
+    transition: all 0.3s ease;
+}
 
+.navbar-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+    .navbar-logo {
+        height: 40px;
+    }
+}
 .btn.border-secondary {
     transition: 0.5s;
 }

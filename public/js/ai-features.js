@@ -31,7 +31,9 @@ const ingredientsDatabase = [
 let currentStates = {
     weeklySchedule: false,
     surpriseMe: false,
-    customDish: false
+    customDish: false,
+    savedSchedule: null, // Add this
+    currentSchedule: null
 };
 
 let selectedIngredients = [];
@@ -94,6 +96,7 @@ function showLoadingState(container, message = 'Loading...') {
 }
 
 // FIXED: Weekly Schedule - Uses your 1100+ recipes
+// FIXED: Weekly Schedule - With Save functionality
 async function toggleWeeklySchedule() {
     const scheduleContainer = document.getElementById('weeklySchedule');
     
@@ -101,7 +104,34 @@ async function toggleWeeklySchedule() {
         scheduleContainer.style.display = 'none';
         currentStates.weeklySchedule = false;
     } else {
-        // Show loading state first
+        // CHECK LOGIN FIRST
+        if (!window.userManager || !window.userManager.currentUser) {
+            console.log('🔐 User not logged in - showing login modal');
+            window.userManager.showNotification('Please login to access Weekly Schedule', 'warning');
+            
+            // Show login modal after brief delay
+            setTimeout(() => {
+                if (window.userManager) {
+                    window.userManager.showLoginModal();
+                }
+            }, 500);
+            
+            return; // STOP HERE if not logged in
+        }
+        
+        // Check if user has a saved schedule
+        const savedSchedule = window.userManager.getSavedSchedule();
+        if (savedSchedule) {
+            // Show saved schedule
+            showSavedSchedule(scheduleContainer, savedSchedule);
+            currentStates.weeklySchedule = true;
+            currentStates.savedSchedule = savedSchedule;
+            closeOtherSections('weeklySchedule');
+            scrollToElement('weeklySchedule');
+            return;
+        }
+        
+        // User is logged in - proceed with schedule generation
         showLoadingState(scheduleContainer, 'Loading your weekly schedule...');
         
         try {
@@ -120,9 +150,10 @@ async function toggleWeeklySchedule() {
                 schedule = window.dishManager.generateFallbackSchedule();
             }
             
-            // Display the schedule
+            // Display the schedule with save option
             displayWeeklySchedule(scheduleContainer, schedule);
             currentStates.weeklySchedule = true;
+            currentStates.currentSchedule = schedule;
             closeOtherSections('weeklySchedule');
             
             // Scroll to the schedule section
@@ -134,6 +165,7 @@ async function toggleWeeklySchedule() {
             const fallbackSchedule = window.dishManager.generateFallbackSchedule();
             displayWeeklySchedule(scheduleContainer, fallbackSchedule);
             currentStates.weeklySchedule = true;
+            currentStates.currentSchedule = fallbackSchedule;
             closeOtherSections('weeklySchedule');
             scrollToElement('weeklySchedule');
         }
@@ -142,6 +174,9 @@ async function toggleWeeklySchedule() {
 
 // Display weekly schedule
 function displayWeeklySchedule(container, schedule) {
+    // Store the current schedule for saving
+    currentStates.currentSchedule = schedule;
+    
     container.innerHTML = `
         <div class="container-fluid py-5 bg-light">
             <div class="container">
@@ -175,7 +210,10 @@ function displayWeeklySchedule(container, schedule) {
                     `).join('')}
                 </div>
                 <div class="text-center mt-4">
-                    <button class="btn btn-success" onclick="regenerateSchedule()">
+                    <button class="btn btn-success me-2" onclick="saveWeeklySchedule()">
+                        💾 Save This Schedule
+                    </button>
+                    <button class="btn btn-primary" onclick="regenerateSchedule()">
                         🔄 Regenerate Schedule
                     </button>
                 </div>
@@ -184,7 +222,133 @@ function displayWeeklySchedule(container, schedule) {
     `;
 }
 
+// NEW: Show saved schedule
+function showSavedSchedule(container, savedSchedule) {
+    container.innerHTML = `
+        <div class="container-fluid py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5">💾 Your Saved Weekly Schedule</h2>
+                <div class="alert alert-info text-center mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This is your saved weekly schedule. You can generate a new one anytime.
+                </div>
+                <div class="row g-4">
+                    ${savedSchedule.days.map(day => `
+                        <div class="col-lg-6 col-xl-4">
+                            <div class="card border-0 shadow h-100">
+                                <div class="card-header bg-success text-white text-center py-3">
+                                    <h5 class="mb-0">${day.day}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="meal-item mb-3 p-3 bg-light rounded">
+                                        <h6 class="text-success">🌅 Breakfast</h6>
+                                        <p class="mb-1"><strong>${day.breakfast.name}</strong></p>
+                                        <small class="text-muted">Type: ${day.breakfast.type} | Time: ${day.breakfast.cookTime}</small>
+                                    </div>
+                                    <div class="meal-item mb-3 p-3 bg-light rounded">
+                                        <h6 class="text-warning">☀️ Lunch</h6>
+                                        <p class="mb-1"><strong>${day.lunch.name}</strong></p>
+                                        <small class="text-muted">Type: ${day.lunch.type} | Time: ${day.lunch.cookTime}</small>
+                                    </div>
+                                    <div class="meal-item p-3 bg-light rounded">
+                                        <h6 class="text-info">🌙 Dinner</h6>
+                                        <p class="mb-1"><strong>${day.dinner.name}</strong></p>
+                                        <small class="text-muted">Type: ${day.dinner.type} | Time: ${day.dinner.cookTime}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-warning me-2" onclick="deleteSavedSchedule()">
+                        🗑️ Delete Saved Schedule
+                    </button>
+                    <button class="btn btn-primary" onclick="generateNewSchedule()">
+                        📅 Generate New Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function saveWeeklySchedule() {
+    if (!window.userManager || !window.userManager.currentUser) {
+        showErrorNotification('Please login to save your schedule');
+        return;
+    }
+    
+    if (!currentStates.currentSchedule) {
+        showErrorNotification('No schedule to save');
+        return;
+    }
+    
+    const scheduleData = {
+        days: currentStates.currentSchedule,
+        savedAt: new Date().toISOString(),
+        scheduleId: 'weekly_' + Date.now()
+    };
+    
+    const success = window.userManager.saveWeeklySchedule(scheduleData);
+    
+    if (success) {
+        showNotification('✅ Weekly schedule saved successfully!', 'success');
+        // Update the display to show it's saved
+        const scheduleContainer = document.getElementById('weeklySchedule');
+        showSavedSchedule(scheduleContainer, scheduleData);
+        currentStates.savedSchedule = scheduleData;
+    } else {
+        showErrorNotification('Failed to save schedule');
+    }
+}
+
+// NEW: Delete saved schedule
+function deleteSavedSchedule() {
+    if (!window.userManager || !window.userManager.currentUser) {
+        showErrorNotification('Please login to manage your schedule');
+        return;
+    }
+    
+    const success = window.userManager.deleteSavedSchedule();
+    
+    if (success) {
+        showNotification('🗑️ Saved schedule deleted', 'info');
+        // Regenerate a new schedule
+        generateNewSchedule();
+    } else {
+        showErrorNotification('Failed to delete schedule');
+    }
+}
+
+// NEW: Generate new schedule (when user has saved one)
+function generateNewSchedule() {
+    const scheduleContainer = document.getElementById('weeklySchedule');
+    showLoadingState(scheduleContainer, 'Generating new weekly schedule...');
+    
+    setTimeout(() => {
+        try {
+            let schedule;
+            
+            if (window.dishManager && window.dishManager.isLoaded) {
+                schedule = window.dishManager.generateWeeklySchedule();
+            } else {
+                schedule = window.dishManager.generateFallbackSchedule();
+            }
+            
+            displayWeeklySchedule(scheduleContainer, schedule);
+            currentStates.savedSchedule = null;
+            
+        } catch (error) {
+            console.error('Error generating schedule:', error);
+            const fallbackSchedule = window.dishManager.generateFallbackSchedule();
+            displayWeeklySchedule(scheduleContainer, fallbackSchedule);
+            currentStates.savedSchedule = null;
+        }
+    }, 1000);
+}
 // FIXED: Regenerate schedule - uses real data
+// UPDATED: Regenerate schedule function
 async function regenerateSchedule() {
     const scheduleContainer = document.getElementById('weeklySchedule');
     
@@ -202,13 +366,33 @@ async function regenerateSchedule() {
         }
         
         displayWeeklySchedule(scheduleContainer, schedule);
+        currentStates.savedSchedule = null;
         
     } catch (error) {
         console.error('Error regenerating schedule:', error);
         const fallbackSchedule = window.dishManager.generateFallbackSchedule();
         displayWeeklySchedule(scheduleContainer, fallbackSchedule);
+        currentStates.savedSchedule = null;
     }
 }
+// NEW: Notification helper
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 4000);
+}
+
 
 // FIXED: Surprise Me - Uses your 1100+ recipes
 // FIXED: Surprise Me - Properly integrated with dishManager and dishes.json
@@ -274,101 +458,100 @@ async function toggleSurpriseMe() {
                     finalDish = randomDish;
                 }
                 
-                // Create scrolling effect with consistent styling
-                // Inside the spinInterval in toggleSurpriseMe(), update the HTML to maintain consistent size:
-selectedDish.innerHTML = `
-    <div class="container-fluid py-3">
-        <div class="container">
-            <div class="card border-0 shadow-lg mx-auto" style="max-width: 800px; min-height: 580px; font-family: 'Raleway', sans-serif;">
-                <div class="card-header bg-success text-white text-center py-3">
-                    <h3 class="mb-1" style="font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 40px; line-height: 48px; color: rgb(255, 255, 255);">🎲 Finding Your Dish</h3>
-                    <small>Scrolling through our recipe collection...</small>
-                </div>
-                <div class="card-body p-0">
-                    <div class="row g-0 align-items-center justify-content-center" style="min-height: 480px;">
-                        <!-- Image Column - Consistent Circle -->
-                        <div class="col-md-5">
-                            <div class="d-flex align-items-center justify-content-center p-4">
-                                <div class="square-image-container rounded-circle overflow-hidden shadow" style="width: 250px; height: 250px;">
-                                    <img src="${randomDish.image}" 
-                                         class="img-fluid h-100 w-100" 
-                                         style="object-fit: cover; object-position: center;" 
-                                         alt="${randomDish.name}"
-                                         loading="lazy"  <!-- ADD THIS -->
-                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
+                // Create scrolling effect with NO LAZY LOADING
+                selectedDish.innerHTML = `
+                    <div class="container-fluid py-3">
+                        <div class="container">
+                            <div class="card border-0 shadow-lg mx-auto" style="max-width: 800px; min-height: 580px; font-family: 'Raleway', sans-serif;">
+                                <div class="card-header bg-success text-white text-center py-3">
+                                    <h3 class="mb-1" style="font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 40px; line-height: 48px; color: rgb(255, 255, 255);">🎲 Finding Your Dish</h3>
+                                    <small>Scrolling through our recipe collection...</small>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Content Column -->
-                        <div class="col-md-7">
-                            <div class="p-4 text-center text-md-start" style="min-height: 400px; display: flex; flex-direction: column;">
-                                <!-- Top Section - Fixed Height -->
-                                <div style="flex: 0 0 auto;">
-                                    <h4 class="text-success mb-3" style="font-family: 'Raleway', sans-serif; font-weight: 800;">${randomDish.name}</h4>
-                                    
-                                    <div class="dish-details mb-4">
-                                        <div class="row text-center justify-content-center">
-                                            <div class="col-6 col-sm-3 mb-3">
-                                                <i class="fas fa-utensils fa-2x text-primary mb-2"></i>
-                                                <p class="mb-1"><strong>Category</strong></p>
-                                                <small class="text-muted">${randomDish.category || 'Main Course'}</small>
-                                            </div>
-                                            <div class="col-6 col-sm-3 mb-3">
-                                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                                                <p class="mb-1"><strong>Cook Time</strong></p>
-                                                <small class="text-muted">${randomDish.cookTime || '30-40 mins'}</small>
-                                            </div>
-                                            <div class="col-6 col-sm-3">
-                                                <i class="fas fa-leaf fa-2x ${randomDish.type === 'non-veg' ? 'text-danger' : 'text-success'} mb-2"></i>
-                                                <p class="mb-1"><strong>Type</strong></p>
-                                                <small class="text-muted">
-                                                    <span class="badge ${randomDish.type === 'non-veg' ? 'bg-danger' : 'bg-success'}">
-                                                        ${randomDish.type || 'veg'}
-                                                    </span>
-                                                </small>
-                                            </div>
-                                            <div class="col-6 col-sm-3">
-                                                <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                                                <p class="mb-1"><strong>Cuisine</strong></p>
-                                                <small class="text-muted">${randomDish.cuisine || 'Various'}</small>
+                                <div class="card-body p-0">
+                                    <div class="row g-0 align-items-center justify-content-center" style="min-height: 480px;">
+                                        <!-- Image Column - Consistent Circle -->
+                                        <div class="col-md-5">
+                                            <div class="d-flex align-items-center justify-content-center p-4">
+                                                <div class="square-image-container rounded-circle overflow-hidden shadow" style="width: 250px; height: 250px;">
+                                                    <img src="${randomDish.image}" 
+                                                         class="img-fluid h-100 w-100" 
+                                                         style="object-fit: cover; object-position: center;" 
+                                                         alt="${randomDish.name}"
+                                                         loading="eager"  <!-- NO LAZY LOADING -->
+                                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Middle Section - Ingredients with Fixed Container -->
-                                <div class="mb-4" style="flex: 1 1 auto; min-height: 120px; max-height: 120px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; background: #f8f9fa;">
-                                    <h6 class="mb-2 text-center">📋 Ingredients</h6>
-                                    ${randomDish.ingredients && randomDish.ingredients.length > 0 ? `
-                                        <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                            ${randomDish.ingredients.slice(0, 8).map(ing => `
-                                                <span class="badge bg-light text-dark border small p-2">${ing}</span>
-                                            `).join('')}
-                                            ${randomDish.ingredients.length > 8 ? `<span class="badge bg-secondary small p-2">+${randomDish.ingredients.length - 8} more</span>` : ''}
+                                        
+                                        <!-- Content Column -->
+                                        <div class="col-md-7">
+                                            <div class="p-4 text-center text-md-start" style="min-height: 400px; display: flex; flex-direction: column;">
+                                                <!-- Top Section - Fixed Height -->
+                                                <div style="flex: 0 0 auto;">
+                                                    <h4 class="text-success mb-3" style="font-family: 'Raleway', sans-serif; font-weight: 800;">${randomDish.name}</h4>
+                                                    
+                                                    <div class="dish-details mb-4">
+                                                        <div class="row text-center justify-content-center">
+                                                            <div class="col-6 col-sm-3 mb-3">
+                                                                <i class="fas fa-utensils fa-2x text-primary mb-2"></i>
+                                                                <p class="mb-1"><strong>Category</strong></p>
+                                                                <small class="text-muted">${randomDish.category || 'Main Course'}</small>
+                                                            </div>
+                                                            <div class="col-6 col-sm-3 mb-3">
+                                                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                                                <p class="mb-1"><strong>Cook Time</strong></p>
+                                                                <small class="text-muted">${randomDish.cookTime || '30-40 mins'}</small>
+                                                            </div>
+                                                            <div class="col-6 col-sm-3">
+                                                                <i class="fas fa-leaf fa-2x ${randomDish.type === 'non-veg' ? 'text-danger' : 'text-success'} mb-2"></i>
+                                                                <p class="mb-1"><strong>Type</strong></p>
+                                                                <small class="text-muted">
+                                                                    <span class="badge ${randomDish.type === 'non-veg' ? 'bg-danger' : 'bg-success'}">
+                                                                        ${randomDish.type || 'veg'}
+                                                                    </span>
+                                                                </small>
+                                                            </div>
+                                                            <div class="col-6 col-sm-3">
+                                                                <i class="fas fa-globe fa-2x text-info mb-2"></i>
+                                                                <p class="mb-1"><strong>Cuisine</strong></p>
+                                                                <small class="text-muted">${randomDish.cuisine || 'Various'}</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Middle Section - Ingredients with Fixed Container -->
+                                                <div class="mb-4" style="flex: 1 1 auto; min-height: 120px; max-height: 120px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; background: #f8f9fa;">
+                                                    <h6 class="mb-2 text-center">📋 Ingredients</h6>
+                                                    ${randomDish.ingredients && randomDish.ingredients.length > 0 ? `
+                                                        <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                                            ${randomDish.ingredients.slice(0, 8).map(ing => `
+                                                                <span class="badge bg-light text-dark border small p-2">${ing}</span>
+                                                            `).join('')}
+                                                            ${randomDish.ingredients.length > 8 ? `<span class="badge bg-secondary small p-2">+${randomDish.ingredients.length - 8} more</span>` : ''}
+                                                        </div>
+                                                    ` : `
+                                                        <p class="text-muted text-center mb-0">No ingredients listed</p>
+                                                    `}
+                                                </div>
+                                                
+                                                <!-- Bottom Section - Fixed Height -->
+                                                <div style="flex: 0 0 auto;">
+                                                    <div class="text-center mt-3">
+                                                        <div class="spinner-border text-primary mb-2" role="status">
+                                                            <span class="visually-hidden">Selecting...</span>
+                                                        </div>
+                                                        <small class="text-muted">Scrolling through ${allDishes.length} authentic recipes...</small>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    ` : `
-                                        <p class="text-muted text-center mb-0">No ingredients listed</p>
-                                    `}
-                                </div>
-                                
-                                <!-- Bottom Section - Fixed Height -->
-                                <div style="flex: 0 0 auto;">
-                                    <div class="text-center mt-3">
-                                        <div class="spinner-border text-primary mb-2" role="status">
-                                            <span class="visually-hidden">Selecting...</span>
-                                        </div>
-                                        <small class="text-muted">Scrolling through ${allDishes.length} authentic recipes...</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-`;
+                `;
                 
                 count++;
                 
@@ -397,6 +580,7 @@ selectedDish.innerHTML = `
     }
 }
 
+
 // FIXED: Show final selected dish with EXACT same layout as spinning animation
 function showFinalDish(dish) {
     const selectedDish = document.getElementById('selectedDish');
@@ -419,7 +603,7 @@ function showFinalDish(dish) {
                                              class="img-fluid h-100 w-100" 
                                              style="object-fit: cover; object-position: center;" 
                                              alt="${dish.name}"
-                                             loading="lazy"  <!-- ADD THIS -->
+                                             loading="eager"  <!-- NO LAZY LOADING -->
                                              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=250&h=250&fit=crop'">
                                     </div>
                                 </div>
@@ -477,7 +661,7 @@ function showFinalDish(dish) {
                                         `}
                                     </div>
                                     
-                                    <!-- Bottom Section - EXACT SAME HEIGHT as spinning version -->
+                                    <!-- Bottom Section - Fixed Height -->
                                     <div style="flex: 0 0 auto; height: 80px; display: flex; flex-direction: column; justify-content: center;">
                                         <div class="action-buttons">
                                             <div class="row g-2 justify-content-center">

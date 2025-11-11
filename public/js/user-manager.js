@@ -103,6 +103,139 @@ class UserManager {
         // Continue with localStorage only - don't throw error
     }
 }
+saveWeeklySchedule(scheduleData) {
+    try {
+        console.log('💾 Saving weekly schedule...');
+        
+        if (!this.currentUser) {
+            console.error('❌ No user logged in');
+            return false;
+        }
+
+        if (this.isFirebaseReady && this.currentUser.uid) {
+            // Firebase version
+            const userRef = this.db.collection('users').doc(this.currentUser.uid);
+            return userRef.update({
+                savedWeeklySchedule: scheduleData,
+                scheduleUpdatedAt: new Date().toISOString()
+            }).then(() => {
+                console.log('✅ Schedule saved to Firebase');
+                // Reload user data to get the updated schedule
+                this.loadUserData(this.currentUser.uid);
+                return true;
+            }).catch(error => {
+                console.error('❌ Error saving schedule to Firebase:', error);
+                return this.saveScheduleToLocalStorage(scheduleData);
+            });
+        } else {
+            // LocalStorage version
+            return this.saveScheduleToLocalStorage(scheduleData);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error saving schedule:', error);
+        return false;
+    }
+}
+
+// Save to localStorage
+saveScheduleToLocalStorage(scheduleData) {
+    try {
+        if (typeof this.currentUser === 'string') {
+            if (!this.users[this.currentUser]) {
+                this.users[this.currentUser] = this.createDefaultUserData();
+            }
+            this.users[this.currentUser].savedWeeklySchedule = scheduleData;
+            this.users[this.currentUser].scheduleUpdatedAt = new Date().toISOString();
+            this.saveUsers();
+            // Update current user data
+            this.userData = this.users[this.currentUser];
+            console.log('✅ Schedule saved to localStorage');
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('❌ Error saving schedule to localStorage:', error);
+        return false;
+    }
+}
+
+// Get saved schedule
+getSavedSchedule() {
+    try {
+        if (!this.currentUser) {
+            return null;
+        }
+
+        let scheduleData = null;
+
+        if (this.isFirebaseReady && this.userData) {
+            scheduleData = this.userData.savedWeeklySchedule || null;
+        } else if (this.userData && this.userData.savedWeeklySchedule) {
+            scheduleData = this.userData.savedWeeklySchedule;
+        }
+
+        return scheduleData;
+        
+    } catch (error) {
+        console.error('❌ Error getting saved schedule:', error);
+        return null;
+    }
+}
+
+// Delete saved schedule
+deleteSavedSchedule() {
+    try {
+        console.log('🗑️ Deleting saved schedule...');
+        
+        if (!this.currentUser) {
+            return false;
+        }
+
+        if (this.isFirebaseReady && this.currentUser.uid) {
+            // Firebase version
+            const userRef = this.db.collection('users').doc(this.currentUser.uid);
+            return userRef.update({
+                savedWeeklySchedule: null,
+                scheduleUpdatedAt: null
+            }).then(() => {
+                console.log('✅ Schedule deleted from Firebase');
+                // Reload user data
+                this.loadUserData(this.currentUser.uid);
+                return true;
+            }).catch(error => {
+                console.error('❌ Error deleting schedule from Firebase:', error);
+                return this.deleteScheduleFromLocalStorage();
+            });
+        } else {
+            // LocalStorage version
+            return this.deleteScheduleFromLocalStorage();
+        }
+        
+    } catch (error) {
+        console.error('❌ Error deleting schedule:', error);
+        return false;
+    }
+}
+
+// Delete from localStorage
+deleteScheduleFromLocalStorage() {
+    try {
+        if (typeof this.currentUser === 'string' && this.users[this.currentUser]) {
+            delete this.users[this.currentUser].savedWeeklySchedule;
+            delete this.users[this.currentUser].scheduleUpdatedAt;
+            this.saveUsers();
+            // Update current user data
+            this.userData = this.users[this.currentUser];
+            console.log('✅ Schedule deleted from localStorage');
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('❌ Error deleting schedule from localStorage:', error);
+        return false;
+    }
+}
     async handleGoogleLoginSuccess(user) {
     try {
         console.log('🎉 Handling Google login success for:', user.email);
@@ -686,28 +819,34 @@ updateProfileModalShoppingList(updatedList) {
 attachShoppingListRemoveHandlers() {
     try {
         document.querySelectorAll('.remove-cart-item-btn').forEach(btn => {
-            // Remove existing listeners by cloning
+            // Remove ALL existing event listeners first
             const newBtn = btn.cloneNode(true);
             btn.parentNode.replaceChild(newBtn, btn);
             
+            // Add SINGLE click event listener
             newBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                const itemIndex = parseInt(e.target.closest('button').getAttribute('data-item-index'));
-                const itemName = e.target.closest('button').getAttribute('data-item-name');
+                const itemIndex = parseInt(newBtn.getAttribute('data-item-index'));
+                const itemName = newBtn.getAttribute('data-item-name');
                 
                 console.log('🗑️ Removing cart item from profile:', itemIndex, itemName);
+                
+                // Disable button to prevent double clicks
+                newBtn.disabled = true;
+                newBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 
                 this.removeFromShoppingList(itemIndex);
             });
         });
         
-        console.log('✅ Attached shopping list remove handlers');
+        console.log('✅ Attached shopping list remove handlers (single click)');
     } catch (error) {
         console.error('❌ Error attaching shopping list remove handlers:', error);
     }
 }
+
     // FAVORITES SYSTEM - GUARANTEED WORKING
     async toggleFavorite(dish) {
     console.log('❤️ Toggle favorite:', dish?.name);
@@ -716,8 +855,8 @@ attachShoppingListRemoveHandlers() {
     if (!this.currentUser) {
         console.log('🔐 User not logged in - showing login modal');
         this.showNotification('Please login to save favorites', 'warning');
-        setTimeout(() => this.showLoginModal(), 500); // Show login modal after brief delay
-        return false; // STOP EXECUTION HERE - no success message
+        setTimeout(() => this.showLoginModal(), 500);
+        return false;
     }
 
     if (!dish || !dish.id) {
@@ -727,56 +866,27 @@ attachShoppingListRemoveHandlers() {
 
     try {
         let isNowFavorite = false;
+        const isCurrentlyFavorite = this.isFavorite(dish);
 
-        if (this.isFirebaseReady && this.currentUser.uid) {
-            // FIREBASE VERSION
-            const userRef = this.db.collection('users').doc(this.currentUser.uid);
-            const userDoc = await userRef.get();
-            
-            if (!userDoc.exists) {
-                console.error('❌ User document not found in Firestore');
-                return false;
-            }
-
-            const userData = userDoc.data();
-            let favorites = userData.favorites || [];
-            const existingIndex = favorites.findIndex(fav => fav.id === dish.id);
-
-            if (existingIndex > -1) {
-                // Remove from favorites
-                favorites.splice(existingIndex, 1);
-                isNowFavorite = false;
-                console.log('✅ Removed from favorites');
-            } else {
-                // Add to favorites
-                favorites.push({
-                    id: dish.id,
-                    name: dish.name,
-                    image: dish.image || 'img/fruite-item-5.webp',
-                    cookTime: dish.cookTime || '30-40 mins',
-                    category: dish.category,
-                    type: dish.type,
-                    addedAt: new Date().toISOString()
-                });
-                isNowFavorite = true;
-                console.log('✅ Added to favorites');
-            }
-
-            await userRef.update({ favorites });
-            await this.loadUserData(this.currentUser.uid);
-            
+        if (isCurrentlyFavorite) {
+            // Use the dedicated remove function for better control
+            await this.removeFavorite(dish.id);
+            isNowFavorite = false;
+            console.log('✅ Removed from favorites');
         } else {
-            // LOCALSTORAGE VERSION
-            let favorites = this.userData.favorites || [];
-            const existingIndex = favorites.findIndex(fav => fav.id === dish.id);
+            // Add to favorites (existing code)
+            if (this.isFirebaseReady && this.currentUser.uid) {
+                const userRef = this.db.collection('users').doc(this.currentUser.uid);
+                const userDoc = await userRef.get();
+                
+                if (!userDoc.exists) {
+                    console.error('❌ User document not found in Firestore');
+                    return false;
+                }
 
-            if (existingIndex > -1) {
-                // Remove from favorites
-                favorites.splice(existingIndex, 1);
-                isNowFavorite = false;
-                console.log('✅ Removed from favorites');
-            } else {
-                // Add to favorites
+                const userData = userDoc.data();
+                let favorites = userData.favorites || [];
+                
                 favorites.push({
                     id: dish.id,
                     name: dish.name,
@@ -787,25 +897,45 @@ attachShoppingListRemoveHandlers() {
                     addedAt: new Date().toISOString()
                 });
                 isNowFavorite = true;
-                console.log('✅ Added to favorites');
-            }
 
-            this.userData.favorites = favorites;
-            
-            // Update users data
-            if (typeof this.currentUser === 'string') {
-                this.users[this.currentUser] = this.userData;
-                this.saveUsers();
+                await userRef.update({ favorites });
+                await this.loadUserData(this.currentUser.uid);
+                
+            } else {
+                let favorites = this.userData.favorites || [];
+                
+                favorites.push({
+                    id: dish.id,
+                    name: dish.name,
+                    image: dish.image || 'img/fruite-item-5.webp',
+                    cookTime: dish.cookTime || '30-40 mins',
+                    category: dish.category,
+                    type: dish.type,
+                    addedAt: new Date().toISOString()
+                });
+                isNowFavorite = true;
+
+                this.userData.favorites = favorites;
+                
+                if (typeof this.currentUser === 'string') {
+                    this.users[this.currentUser] = this.userData;
+                    this.saveUsers();
+                }
             }
+            console.log('✅ Added to favorites');
         }
 
         // INSTANTLY UPDATE THE HEART BUTTON ON THE PAGE
         this.updateFavoriteButton(dish.id, isNowFavorite);
         
         // Update favorite icons in profile modal if open
-        this.updateProfileModalFavorites();
+        if (!isNowFavorite) {
+            // Only update if we removed a favorite (when adding, the modal might not be open)
+            const favorites = this.getFavorites();
+            this.updateProfileModalFavoritesInstantly(favorites);
+        }
 
-        // Show appropriate notification (ONLY ONE MESSAGE)
+        // Show appropriate notification
         if (isNowFavorite) {
             this.showNotification(`❤️ ${dish.name} added to favorites!`, 'success');
         } else {
@@ -863,32 +993,36 @@ attachShoppingListRemoveHandlers() {
 
     // Attach event listeners to favorite remove buttons
     attachFavoriteRemoveHandlers() {
-        try {
-            document.querySelectorAll('.remove-favorite-btn').forEach(btn => {
-                // Remove existing listeners by cloning
-                const newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-                
-                newBtn.addEventListener('click', (e) => {
-                    const dishId = parseInt(e.target.closest('button').getAttribute('data-dish-id'));
-                    const dishName = e.target.closest('button').getAttribute('data-dish-name');
-                    
-                    console.log('🗑️ Removing favorite from profile:', dishId, dishName);
-                    
-                    const favorites = this.getFavorites();
-                    const dish = favorites.find(f => f.id === dishId);
-                    
-                    if (dish) {
-                        this.toggleFavorite(dish);
-                    }
-                });
-            });
+    try {
+        document.querySelectorAll('.remove-favorite-btn').forEach(btn => {
+            // Remove ALL existing event listeners first
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
             
-            console.log('✅ Attached favorite remove handlers');
-        } catch (error) {
-            console.error('❌ Error attaching favorite remove handlers:', error);
-        }
+            // Add SINGLE click event listener
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const dishId = parseInt(newBtn.getAttribute('data-dish-id'));
+                const dishName = newBtn.getAttribute('data-dish-name');
+                
+                console.log('🗑️ Removing favorite from profile:', dishId, dishName);
+                
+                // Disable button to prevent double clicks
+                newBtn.disabled = true;
+                newBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                this.removeFavorite(dishId);
+            });
+        });
+        
+        console.log('✅ Attached favorite remove handlers (single click)');
+    } catch (error) {
+        console.error('❌ Error attaching favorite remove handlers:', error);
     }
+}
+
 
     // Update specific favorite button instantly
     updateFavoriteButton(dishId, isFavorite) {
@@ -2306,146 +2440,216 @@ showPasswordResetModal() {
 }
 
     showUserProfile() {
-        console.log('👤 Showing user profile');
-        
-        if (!this.currentUser) {
-            this.showNotification('Please login to view your profile', 'warning');
-            this.showLoginModal();
-            return;
-        }
+    console.log('👤 Showing user profile');
+    
+    if (!this.currentUser) {
+        this.showNotification('Please login to view your profile', 'warning');
+        this.showLoginModal();
+        return;
+    }
 
-        try {
-            const user = this.userData;
-            const safeUsername = user?.username || (typeof this.currentUser === 'string' ? this.currentUser.split('@')[0] : this.currentUser.email?.split('@')[0]) || 'User';
-            const safeEmail = typeof this.currentUser === 'string' ? this.currentUser : this.currentUser.email;
+    try {
+        const user = this.userData;
+        const safeUsername = user?.username || (typeof this.currentUser === 'string' ? this.currentUser.split('@')[0] : this.currentUser.email?.split('@')[0]) || 'User';
+        const safeEmail = typeof this.currentUser === 'string' ? this.currentUser : this.currentUser.email;
 
-            const favorites = this.getFavorites();
-            const shoppingList = this.getShoppingList();
+        const favorites = this.getFavorites();
+        const shoppingList = this.getShoppingList();
+        const savedSchedule = this.getSavedSchedule();
+        const hasSavedSchedule = !!savedSchedule;
 
-            const profileHtml = `
-                <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.1);">
-                            <div class="modal-header" style="background: linear-gradient(135deg, #FFB524, #ff8c42); border: none; border-radius: 15px 15px 0 0;">
-                                <h5 class="modal-title text-white fw-bold" id="profileModalLabel">
-                                    <i class="fas fa-user-circle me-2"></i>Welcome back, ${safeUsername}!
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body p-4">
-                                <div class="row mb-4">
-                                    <div class="col-12">
-                                        <div class="card border-0 shadow-sm">
-                                            <div class="card-body">
-                                                <h6 class="fw-bold text-primary mb-3">
-                                                    <i class="fas fa-info-circle me-2"></i>Account Information
-                                                </h6>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2"><strong>Email:</strong> ${safeEmail}</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <p class="mb-0"><strong>Member since:</strong> ${user?.joined ? new Date(user.joined).toLocaleDateString() : 'Recently'}</p>
-                                                    </div>
+        const profileHtml = `
+            <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.1);">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #FFB524, #ff8c42); border: none; border-radius: 15px 15px 0 0;">
+                            <h5 class="modal-title text-white fw-bold" id="profileModalLabel">
+                                <i class="fas fa-user-circle me-2"></i>Welcome back, ${safeUsername}!
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <h6 class="fw-bold text-primary mb-3">
+                                                <i class="fas fa-info-circle me-2"></i>Account Information
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="mb-2"><strong>Email:</strong> ${safeEmail}</p>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-4">
-                                    <div class="col-md-6 mb-3 mb-md-0">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <h6 class="fw-bold text-primary mb-3">
-                                                    <i class="fas fa-heart me-2"></i>Saved & Favorite Recipes (${favorites.length})
-                                                </h6>
-                                                <div class="favorites-list" style="max-height: 200px; overflow-y: auto;">
-                                                    ${favorites.length > 0 ? 
-                                                        favorites.map((fav, index) => `
-                                                            <div class="d-flex justify-content-between align-items-center border-bottom py-2 favorite-item" data-dish-id="${fav.id}">
-                                                                <span class="text-dark">${fav.name}</span>
-                                                                <button class="btn btn-sm btn-outline-danger remove-favorite-btn" 
-                                                                        data-dish-id="${fav.id}" data-dish-name="${fav.name}">
-                                                                    <i class="fas fa-times"></i>
-                                                                </button>
-                                                            </div>
-                                                        `).join('') 
-                                                        : '<p class="text-muted text-center py-3"><i class="fas fa-heart-broken me-2"></i>No Saved Or favorites yet</p>'
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card border-0 shadow-sm h-100">
-                                            <div class="card-body">
-                                                <h6 class="fw-bold text-primary mb-3">
-                                                    <i class="fas fa-shopping-bag me-2"></i>Shopping List (${shoppingList.length})
-                                                </h6>
-                                                <div class="shopping-list" style="max-height: 200px; overflow-y: auto;">
-                                                    ${shoppingList.length > 0 ? 
-                                                        shoppingList.map((item, index) => `
-                                                            <div class="d-flex justify-content-between align-items-center border-bottom py-2 cart-item" data-item-index="${index}">
-                                                                <span class="text-dark">${item.name}</span>
-                                                                <button class="btn btn-sm btn-outline-danger remove-cart-item-btn" 
-                                                                        data-item-index="${index}" data-item-name="${item.name}">
-                                                                    <i class="fas fa-times"></i>
-                                                                </button>
-                                                            </div>
-                                                        `).join('') 
-                                                        : '<p class="text-muted text-center py-3"><i class="fas fa-shopping-basket me-2"></i>No items in shopping list</p>'
-                                                    }
+                                                <div class="col-md-6">
+                                                    <p class="mb-0"><strong>Member since:</strong> ${user?.joined ? new Date(user.joined).toLocaleDateString() : 'Recently'}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer" style="border: none; background: #f8f9fa; border-radius: 0 0 15px 15px;">
-                                <button class="btn custom-logout-btn" onclick="userManager.logout()">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                </button>
+                            
+                            <!-- NEW: Weekly Schedule Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <h6 class="fw-bold text-primary mb-3">
+                                                <i class="fas fa-calendar-alt me-2"></i>Weekly Schedule
+                                                ${hasSavedSchedule ? 
+                                                    '<span class="badge bg-success ms-2">Saved</span>' : 
+                                                    '<span class="badge bg-secondary ms-2">Not Saved</span>'
+                                                }
+                                            </h6>
+                                            ${hasSavedSchedule ? `
+                                                <p class="text-muted mb-3">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    You have a weekly schedule saved from 
+                                                    ${new Date(savedSchedule.savedAt).toLocaleDateString()}
+                                                </p>
+                                                <button class="btn btn-sm btn-outline-primary me-2" onclick="userManager.viewSavedSchedule()">
+                                                    <i class="fas fa-eye me-1"></i>View Schedule
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="userManager.deleteSavedScheduleFromProfile()">
+                                                    <i class="fas fa-trash me-1"></i>Delete Schedule
+                                                </button>
+                                            ` : `
+                                                <p class="text-muted mb-3">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    No weekly schedule saved yet. Generate one from the AI Features section!
+                                                </p>
+                                                <button class="btn btn-sm btn-primary" onclick="toggleWeeklySchedule(); bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();">
+                                                    <i class="fas fa-plus me-1"></i>Create Schedule
+                                                </button>
+                                            `}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3 mb-md-0">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+            <h6 class="fw-bold text-primary mb-3">
+                <i class="fas fa-heart me-2"></i>Favorite Recipes (${favorites.length})
+            </h6>
+            <div class="favorites-list" style="max-height: 200px; overflow-y: auto;">
+                ${favorites.length > 0 ? 
+                    favorites.map((fav, index) => `
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2 favorite-item" data-dish-id="${fav.id}">
+                            <span class="text-dark">${fav.name}</span>
+                            <button class="btn btn-sm btn-outline-danger remove-favorite-btn" 
+                                    data-dish-id="${fav.id}" data-dish-name="${fav.name}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `).join('') 
+                    : '<p class="text-muted text-center py-3"><i class="fas fa-heart-broken me-2"></i>No favorites yet</p>'
+                }
+            </div>
+        </div>
+    </div>
+</div>
+                                <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+            <h6 class="fw-bold text-primary mb-3">
+                <i class="fas fa-shopping-bag me-2"></i>Shopping List (${shoppingList.length})
+            </h6>
+            <div class="shopping-list" style="max-height: 200px; overflow-y: auto;">
+                ${shoppingList.length > 0 ? 
+                    shoppingList.map((item, index) => `
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2 cart-item" data-item-index="${index}">
+                            <span class="text-dark">${item.name}</span>
+                            <button class="btn btn-sm btn-outline-danger remove-cart-item-btn" 
+                                    data-item-index="${index}" data-item-name="${item.name}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `).join('') 
+                    : '<p class="text-muted text-center py-3"><i class="fas fa-shopping-basket me-2"></i>No items in shopping list</p>'
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border: none; background: #f8f9fa; border-radius: 0 0 15px 15px;">
+                            <button class="btn custom-logout-btn" onclick="userManager.logout()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </button>
                         </div>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
-            // Remove existing modal if any
-            const existingModal = document.getElementById('profileModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
+        // Remove existing modal if any
+        const existingModal = document.getElementById('profileModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
 
-            // Add modal to DOM
-            document.body.insertAdjacentHTML('beforeend', profileHtml);
+        // Add modal to DOM
+        document.body.insertAdjacentHTML('beforeend', profileHtml);
+        
+        // Add event handlers
+        setTimeout(() => {
+            this.attachFavoriteRemoveHandlers();
             
-            // Add event handlers
-            setTimeout(() => {
-                this.attachFavoriteRemoveHandlers();
-                
-                // Cart item removal
-                document.querySelectorAll('.remove-cart-item-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const itemIndex = parseInt(e.target.closest('button').getAttribute('data-item-index'));
-                        const itemName = e.target.closest('button').getAttribute('data-item-name');
-                        
-                        console.log('🗑️ Removing cart item:', itemIndex, itemName);
-                        this.removeFromShoppingList(itemIndex);
-                    });
+            // Cart item removal
+            document.querySelectorAll('.remove-cart-item-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const itemIndex = parseInt(e.target.closest('button').getAttribute('data-item-index'));
+                    const itemName = e.target.closest('button').getAttribute('data-item-name');
+                    
+                    console.log('🗑️ Removing cart item:', itemIndex, itemName);
+                    this.removeFromShoppingList(itemIndex);
                 });
-            }, 100);
+            });
+        }, 100);
 
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
-            modal.show();
-            
-        } catch (error) {
-            console.error('❌ Error showing user profile:', error);
-            this.showNotification('Error loading profile', 'error');
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+        
+    } catch (error) {
+        console.error('❌ Error showing user profile:', error);
+        this.showNotification('Error loading profile', 'error');
+    }
+}
+viewSavedSchedule() {
+    const savedSchedule = this.getSavedSchedule();
+    if (savedSchedule) {
+        // Close profile modal
+        const profileModal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+        if (profileModal) profileModal.hide();
+        
+        // Show weekly schedule section
+        setTimeout(() => {
+            toggleWeeklySchedule();
+        }, 500);
+    }
+}
+
+// NEW: Delete saved schedule from profile
+deleteSavedScheduleFromProfile() {
+    if (confirm('Are you sure you want to delete your saved weekly schedule?')) {
+        const success = this.deleteSavedSchedule();
+        if (success) {
+            this.showNotification('🗑️ Weekly schedule deleted', 'info');
+            // Refresh profile modal
+            const profileModal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+            if (profileModal) profileModal.hide();
+            setTimeout(() => this.showUserProfile(), 500);
+        } else {
+            this.showNotification('Failed to delete schedule', 'error');
         }
     }
+}
 // Review system
 addReview(dish, rating, comment, userName, userEmail) {
     console.log('⭐ Adding review for:', dish?.name);
@@ -2564,8 +2768,8 @@ getDishReviews(dishId) {
             this.showNotification(`🗑️ ${removedItem.name} removed from cart`, 'info');
             this.updateShoppingBagCounter();
             
-            // PROPERLY UPDATE THE SHOPPING LIST IN PROFILE MODAL
-            this.updateProfileModalShoppingList(shoppingList);
+            // INSTANTLY UPDATE THE PROFILE MODAL SHOPPING LIST
+            this.updateProfileModalShoppingListInstantly(shoppingList);
             
             return true;
         }
@@ -2578,6 +2782,7 @@ getDishReviews(dishId) {
         return false;
     }
 }
+
 
     // Add this function to update the heart icon when favorites are removed
     updateFavoriteIcons() {
@@ -2631,6 +2836,138 @@ getDishReviews(dishId) {
     }
     
     return result;
+}
+async removeFavorite(dishId) {
+    console.log('❤️ Removing favorite:', dishId);
+    
+    if (!this.currentUser) {
+        this.showNotification('Please login to manage favorites', 'warning');
+        return false;
+    }
+
+    try {
+        let favorites = [];
+
+        if (this.isFirebaseReady && this.currentUser.uid) {
+            // FIREBASE VERSION
+            const userRef = this.db.collection('users').doc(this.currentUser.uid);
+            const userDoc = await userRef.get();
+            
+            if (!userDoc.exists) {
+                console.error('❌ User document not found in Firestore');
+                return false;
+            }
+
+            const userData = userDoc.data();
+            favorites = userData.favorites || [];
+            const existingIndex = favorites.findIndex(fav => fav.id === dishId);
+
+            if (existingIndex > -1) {
+                favorites.splice(existingIndex, 1);
+                await userRef.update({ favorites });
+                await this.loadUserData(this.currentUser.uid);
+            }
+            
+        } else {
+            // LOCALSTORAGE VERSION
+            favorites = this.userData.favorites || [];
+            const existingIndex = favorites.findIndex(fav => fav.id === dishId);
+
+            if (existingIndex > -1) {
+                favorites.splice(existingIndex, 1);
+                this.userData.favorites = favorites;
+                
+                if (typeof this.currentUser === 'string') {
+                    this.users[this.currentUser] = this.userData;
+                    this.saveUsers();
+                }
+            }
+        }
+
+        // INSTANTLY UPDATE THE PROFILE MODAL FAVORITES
+        this.updateProfileModalFavoritesInstantly(favorites);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Error removing favorite:', error);
+        return false;
+    }
+}
+// NEW: Instantly update profile modal shopping list
+updateProfileModalShoppingListInstantly(updatedList) {
+    try {
+        const profileModal = document.getElementById('profileModal');
+        if (!profileModal) return;
+        
+        const shoppingListContainer = profileModal.querySelector('.shopping-list');
+        const shoppingListCount = profileModal.querySelector('.fa-shopping-bag')?.closest('.card-body')?.querySelector('h6');
+        
+        if (shoppingListContainer && shoppingListCount) {
+            // Update count
+            shoppingListCount.innerHTML = `<i class="fas fa-shopping-bag me-2"></i>Shopping List (${updatedList.length})`;
+            
+            // Update list with PROPER indexes
+            if (updatedList.length > 0) {
+                shoppingListContainer.innerHTML = updatedList.map((item, index) => `
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 cart-item" data-item-index="${index}">
+                        <span class="text-dark">${item.name}</span>
+                        <button class="btn btn-sm btn-outline-danger remove-cart-item-btn" 
+                                data-item-index="${index}" data-item-name="${item.name}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+                
+                // Re-attach event listeners to new buttons
+                this.attachShoppingListRemoveHandlers();
+            } else {
+                shoppingListContainer.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-shopping-basket me-2"></i>No items in shopping list</p>';
+            }
+        }
+        
+        console.log('✅ Instantly updated profile modal shopping list');
+    } catch (error) {
+        console.error('❌ Error instantly updating profile modal shopping list:', error);
+    }
+}
+
+// NEW: Instantly update profile modal favorites
+updateProfileModalFavoritesInstantly(updatedFavorites) {
+    try {
+        const profileModal = document.getElementById('profileModal');
+        if (!profileModal) return;
+        
+        const favoritesContainer = profileModal.querySelector('.favorites-list');
+        const favoritesCount = profileModal.querySelector('.fa-heart')?.closest('.card-body')?.querySelector('h6');
+        
+        if (favoritesContainer && favoritesCount) {
+            // Update count
+            favoritesCount.innerHTML = `<i class="fas fa-heart me-2"></i>Favorite Recipes (${updatedFavorites.length})`;
+            
+            // Update list
+            if (updatedFavorites.length > 0) {
+                favoritesContainer.innerHTML = updatedFavorites.map((fav, index) => `
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 favorite-item" data-dish-id="${fav.id}">
+                        <span class="text-dark">${fav.name}</span>
+                        <button class="btn btn-sm btn-outline-danger remove-favorite-btn" 
+                                data-dish-id="${fav.id}" data-dish-name="${fav.name}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+                
+                // Re-attach event listeners to new buttons
+                this.attachFavoriteRemoveHandlers();
+            } else {
+                favoritesContainer.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-heart-broken me-2"></i>No favorites yet</p>';
+            }
+        }
+        
+        console.log('✅ Instantly updated profile modal favorites');
+    } catch (error) {
+        console.error('❌ Error instantly updating profile modal favorites:', error);
+    }
 }
 createDefaultUserData() {
     // FIX: Check if currentUser is string before using split

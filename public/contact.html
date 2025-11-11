@@ -2,9 +2,19 @@
 <html lang="en">
 
     <head>
+        <!-- Add this to your head section for instant critical image loading -->
+        <link rel="preload" href="img/Daily Dish Template.webp" as="image">
+        <link rel="preload" href="img/DailyDish.webp" as="image">
+        <link rel="preload" href="img/Weekly Schedule.webp" as="image">
+        <link rel="preload" href="img/Chicken-Biryani.webp" as="image">
+
+<!-- Preconnect to critical domains -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://www.gstatic.com">
         <script src="js/optimize.js"></script>
         <meta charset="utf-8">
-        <title>Daily Dish - Contact Us</title>
+        <title>Daily Dish Wish - Contact Us</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -91,7 +101,10 @@
             </div>
             <div class="container px-0">
                 <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Daily Dish</h1></a>
+                    <a href="index.html" class="navbar-brand"><img src="img/DDW.webp" alt="Daily Dish Wish" class="navbar-logo" 
+         style="height: 90px; width: auto;"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <h1 class="text-primary display-6" style="display: none;">Daily Dish Wish</h1></a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -138,14 +151,14 @@
 
 
         <!-- Single Page Header start -->
-        <div class="container-fluid page-header py-5 contact-hero">
-            <h1 class="text-center text-white display-6">Contact Us</h1>
-            <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Support</a></li>
-                <li class="breadcrumb-item active text-white">Contact</li>
-            </ol>
-        </div>
+        <div class="container-fluid page-header py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/cart-page-header-img.webp') center/cover no-repeat;">
+    <h1 class="text-center text-white display-6">Contact Us</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">All Dishes</a></li>
+        <li class="breadcrumb-item active text-white">Contact Us</li>
+    </ol>
+</div>
         <!-- Single Page Header End -->
 
 
@@ -228,45 +241,6 @@
 </div>
 <!-- Contact End -->
 
-                <!-- Additional Support Section -->
-                <div class="row mt-5">
-                    <div class="col-12 text-center mb-5">
-                        <h2 class="text-primary">Other Ways We Can Help</h2>
-                        <p class="text-muted">Quick solutions for common cooking questions</p>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <i class="fas fa-book fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Recipe Help Center</h5>
-                                <p class="card-text">Find answers to common cooking questions and recipe troubleshooting.</p>
-                                <a href="#" class="btn btn-outline-primary">Visit Help Center</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Cooking Community</h5>
-                                <p class="card-text">Join our community of home cooks to share tips and experiences.</p>
-                                <a href="#" class="btn btn-outline-primary">Join Community</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100 text-center">
-                            <div class="card-body p-4">
-                                <i class="fas fa-chef-hat fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Cooking Classes</h5>
-                                <p class="card-text">Learn from professional chefs with our online cooking workshops.</p>
-                                <a href="#" class="btn btn-outline-primary">View Classes</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Contact End -->
 
 
@@ -277,7 +251,7 @@
                     <div class="row g-4">
                         <div class="col-lg-3">
                             <a href="#">
-                                <h1 class="text-primary mb-0">Daily Dish</h1>
+                                <h1 class="text-primary mb-0">Daily Dish Wish</h1>
                                 <p class="text-secondary mb-0">Fresh recipes daily</p>
                             </a>
                         </div>
@@ -289,10 +263,11 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="d-flex justify-content-end pt-3">
-                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
+<!--<a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>-->
                                 <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-instagram"></i></a>
                                 <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <!-- <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>-->
                             </div>
                         </div>
                     </div>
@@ -300,7 +275,7 @@
                 <div class="row g-5">
                     <div class="col-lg-3 col-md-6">
                         <div class="footer-item">
-                            <h4 class="text-light mb-3">Why Choose Daily Dish?</h4>
+                            <h4 class="text-light mb-3">Why Choose Daily Dish Wish?</h4>
                             <p class="mb-4">Discover amazing recipes from around the world. Plan your meals, save your favorites, and never wonder what to cook again!</p>
                             <a href="index.html" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Explore Recipes</a>
                         </div>
@@ -339,7 +314,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Daily Dish</a>, All right reserved.</span>
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Daily Dish Wish</a>, All right reserved.</span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
                         Made with ❤️ for food lovers everywhere

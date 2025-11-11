@@ -2,6 +2,16 @@
 <html lang="en">
 
     <head>
+        <!-- Add this to your head section for instant critical image loading -->
+        <link rel="preload" href="img/Daily Dish Template.webp" as="image">
+        <link rel="preload" href="img/DailyDish.webp" as="image">
+        <link rel="preload" href="img/Weekly Schedule.webp" as="image">
+        <link rel="preload" href="img/Chicken-Biryani.webp" as="image">
+
+<!-- Preconnect to critical domains -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://www.gstatic.com">
         <script src="js/optimize.js"></script>
         <meta charset="utf-8">
         <title>Daily Dish Wish - Your Daily Menu, Solution! </title>
@@ -63,7 +73,12 @@
             
             <div class="container px-0">
                 <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Daily Dish Wish</h1></a>
+                    <a href="index.html" class="navbar-brand">
+    <img src="img/DDW.webp" alt="Daily Dish Wish" class="navbar-logo" 
+         style="height: 90px; width: auto;"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <h1 class="text-primary display-6" style="display: none;">Daily Dish Wish</h1>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -699,77 +714,6 @@
                 </div>
             </div>
         </div>
-        <!-- Vesitable Shop End -->
-
-
-        <!-- Banner Section Start-->
-        <div class="container-fluid banner bg-secondary my-5">
-            <div class="container py-5">
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-6">
-                        <div class="py-4">
-                            <h1 class="display-3 text-white">Exotic Recipe</h1>
-                            <p class="fw-normal display-3 text-dark mb-4">in Our App</p>
-                            <p class="mb-4 text-dark">Find easy, delicious recipes ready in minutes when time is short.</p>
-                            <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5">BUY</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="position-relative">
-                            <img src="img/baner-1.png" class="img-fluid w-100 rounded" alt="">
-                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">
-                                <h1 style="font-size: 100px;">1</h1>
-                                <div class="d-flex flex-column">
-                                    <span class="h2 mb-0">50$</span>
-                                    <span class="h4 text-muted mb-0">kg</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Banner Section End -->
-        <!-- Fact Start -->
-        <div class="container-fluid py-5">
-            <div class="container">
-                <div class="bg-light p-5 rounded">
-                    <div class="row g-4 justify-content-center">
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
-                                <h4>Happy Foodies</h4>
-                                <h1>100+</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-lightbulb text-warning"></i> 
-                                <h4>Cooking Sorted</h4>
-                                <h1>95%</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-trophy text-warning"></i>
-                                <h4>Winning Recipes</h4>
-                                <h1>423</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-random text-secondary"></i>
-                                <h4>Custom Creations</h4>
-                                <h1>99%</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Fact Start -->
-
-
         <!-- Tastimonial Start -->
         <div class="container-fluid testimonial py-5">
             <div class="container py-5">
@@ -902,7 +846,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="row g-4">
                         <div class="col-lg-3">
                             <a href="#">
-                                <h1 class="text-primary mb-0">Daily Dish Wish</h1>
+                                <div class="navbar-brand-container">
+    <img src="img/DDW.webp" alt="Daily Dish Wish" class="navbar-logo" 
+         style="height: 90px; width: auto;"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <h1 class="text-primary mb-0 fallback-text" style="display: none;">Daily Dish Wish</h1>
+</div>
                                 <p class="text-secondary mb-0">Creative & Best Ideas</p>
                             </a>
                         </div>
@@ -914,10 +863,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="col-lg-3">
                             <div class="d-flex justify-content-end pt-3">
-                                <a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
+                                <!--<a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>-->
                                 <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-instagram"></i></a>
                                 <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <!-- <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>-->
                             </div>
                         </div>
                     </div>
@@ -966,7 +916,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>DailyDishWish</a>, All right reserved.</span>
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>DailyDishWish</a>, All right reserved. A project of Sharpcode</span>
                     </div>
                 </div>
             </div>
